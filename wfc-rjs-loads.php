@@ -73,7 +73,7 @@
             // Localize Variables
             wp_localize_script(
                 'angular-core',
-                'myLocalized',
+                'wfcLocalized',
                 array(
                     'site'               => get_bloginfo( 'wpurl' ),
                     'base'               => json_url(),

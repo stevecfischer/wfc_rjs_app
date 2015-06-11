@@ -1,44 +1,41 @@
-<?php
-    /**
-     *
-     * @package scf-framework
-     * @author Steve
-     * @date 6/10/2015
-     */
+<?php get_header(); ?>
 
-    get_header(); ?>
+<?php if (have_posts()) {
+    while (have_posts()) :
+    the_post(); ?>
 
-<div>
+<?php if( is_front_page() ){ ?>
+    <div id="page-title"><h3><?php the_title(); ?></h3></div>
+<?php } else{ ?>
+    <div id="page-title"><h3><?php the_title(); ?></h3></div>
+<?php } ?>
+<div id="indexwrapper">
+    <div id="index-content">
+        <div>
     <h1>
         Using The $http Service In AngularJS To Make AJAX Requests
     </h1>
-    <!-- Show existing friends. -->
     <ul>
-        <li ng-repeat="post in posts">
-        {{ post.title }}
-        (
-        <a ng-click="removeFriend( post )">delete</a>
+        <li ng-repeat="load in loads">
+        {{load.ID}} - {{ load.title }} (
+        <a ng-click="removeLoad( load )">delete</a>
         )
         </li>
     </ul>
-    <!-- Add a new friend to the list. -->
-    <form ng-submit="addFriend()">
-        <input type="text" ng-model="form.name" size="20"/>
-        <input type="submit" value="Add Friend"/>
+    <form ng-submit="addLoad()">
+        <input type="text" ng-model="form.name" size="20"/> <input type="submit" value="Add Load"/>
     </form>
     <!-- Initialize scripts. -->
     <script type="text/javascript">
         // Define the module for our AngularJS application.
-        var app = angular.module("Demo", []);
+        var app = angular.module("Rjs", []);
         // -------------------------------------------------- //
         // -------------------------------------------------- //
         // I control the main demo.
         app.controller(
-            "DemoController",
-            function ($scope, friendService) {
-
-                // I contain the list of friends to be rendered.
-                $scope.posts = [];
+            "LoadController",
+            function ($scope, postService) {
+                $scope.loads = [];
                 // I contain the ngModel values for form interaction.
                 $scope.form = {
                     name: ""
@@ -47,14 +44,8 @@
                 // ---
                 // PUBLIC METHODS.
                 // ---
-                // I process the add-friend form.
-                $scope.addFriend = function () {
-
-                    // If the data we provide is invalid, the promise will be rejected,
-                    // at which point we can tell the user that something went wrong. In
-                    // this case, I'm just logging to the console to keep things very
-                    // simple for the demo.
-                    friendService.addFriend($scope.form.name)
+                $scope.addLoad = function () {
+                    postService.addLoad($scope.form.name)
                         .then(
                         loadRemoteData,
                         function (errorMessage) {
@@ -62,15 +53,10 @@
                         }
                     )
                     ;
-                    // Reset the form once values have been consumed.
                     $scope.form.name = "";
                 };
-                // I remove the given friend from the current collection.
-                $scope.removeFriend = function (post) {
-
-                    // Rather than doing anything clever on the client-side, I'm just
-                    // going to reload the remote data.
-                    friendService.removeFriend(post.id)
+                $scope.removeLoad = function (load) {
+                    postService.removeLoad(load.ID)
                         .then(loadRemoteData)
                     ;
                 };
@@ -78,15 +64,15 @@
                 // PRIVATE METHODS.
                 // ---
                 // I apply the remote data to the local scope.
-                function applyRemoteData(newFriends) {
-                    $scope.posts = newFriends;
+                function applyRemoteData(newLoads) {
+                    $scope.loads = newLoads;
                 }
 
                 // I load the remote data from the server.
                 function loadRemoteData() {
 
                     // The friendService returns a promise.
-                    friendService.getFriends()
+                    postService.getLoads()
                         .then(
                         function (posts) {
                             applyRemoteData(posts);
@@ -98,40 +84,42 @@
         );
         // -------------------------------------------------- //
         // -------------------------------------------------- //
-        // I act a repository for the remote friend collection.
         app.service(
-            "friendService",
+            "postService",
             function ($http, $q) {
 
                 // Return public API.
                 return ({
-                    addFriend   : addFriend,
-                    getFriends  : getFriends,
-                    removeFriend: removeFriend
+                    addLoad: addLoad,
+                    getLoads: getLoads,
+                    removeLoad: removeLoad
                 });
                 // ---
                 // PUBLIC METHODS.
                 // ---
-                // I add a friend with the given name to the remote collection.
-                function addFriend(name) {
+                function addLoad(name) {
                     var request = $http({
                         method: "post",
-                        url   : "api/index.cfm",
+                        url: "/wp-json/posts/?_wp_json_nonce=" + wfcLocalized.nonce,
                         params: {
                             action: "add"
                         },
-                        data  : {
-                            name: name
+                        data: {
+                            title: name,
+                            type: 'wfc_loads',
+                            status: 'publish'
                         }
                     });
+var scf = request.then(handleSuccess, handleError);
+                    console.log(scf);
+
                     return ( request.then(handleSuccess, handleError) );
                 }
 
-                // I get all of the friends in the remote collection.
-                function getFriends() {
+                function getLoads() {
                     var request = $http({
                         method: "get",
-                        url   : "/wp-json/posts/?type=wfc_loads",
+                        url: "/wp-json/posts/?type=wfc_loads",
                         params: {
                             action: "get"
                         }
@@ -139,16 +127,12 @@
                     return ( request.then(handleSuccess, handleError) );
                 }
 
-                // I remove the friend with the given ID from the remote collection.
-                function removeFriend(id) {
+                function removeLoad(ID) {
                     var request = $http({
                         method: "delete",
-                        url   : "api/index.cfm",
+                        url: "/wp-json/posts/" + ID + "?force=0&_wp_json_nonce=" + wfcLocalized.nonce,
                         params: {
                             action: "delete"
-                        },
-                        data  : {
-                            id: id
                         }
                     });
                     return ( request.then(handleSuccess, handleError) );
@@ -157,12 +141,11 @@
                 // ---
                 // PRIVATE METHODS.
                 // ---
-                // I transform the error response, unwrapping the application dta from
+                // I transform the error response, unwrapping the application data from
                 // the API response payload.
                 function handleError(response) {
-
                     // The API response from the server should be returned in a
-                    // nomralized format. However, if the request was not handled by the
+                    // normalized format. However, if the request was not handled by the
                     // server (or what not handles properly - ex. server error), then we
                     // may have to normalize it on our end, as best we can.
                     if (
@@ -183,5 +166,29 @@
         );
     </script>
 </div>
+        <?php wp_link_pages( array('before' => ''.__( 'Pages:', 'twentyten' ), 'after' => '') ); ?>
+        <?php edit_post_link( __( 'Edit', 'twentyten' ), '', '' ); ?>
 
+
+
+        <?php endwhile;
+            } ?>
+    </div>
+    <!-- //#index-content -->
+    <div id="sidebar">
+        <?php get_sidebar(); ?>
+        <div id="image-box">
+            <a href="/?page_id=19">
+                <img src="<?php bloginfo( 'template_url' ); ?>/images/location-contact-sm.png" width="251" height="123" border="0"/>
+            </a>
+        </div>
+        <br style="clear:both"/>
+        <div id="image-box">
+            <a href="/?page_id=4">
+                <img src="<?php bloginfo( 'template_url' ); ?>/images/customer-carrier-page.png" width="251" height="123" border="0"/>
+            </a>
+        </div>
+    </div>
+    <!-- //#sidebar -->
+</div> <!-- //#indexwrapper -->
 <?php get_footer(); ?>
