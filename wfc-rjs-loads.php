@@ -7,7 +7,7 @@
      *
      * Plugin Name: RJS Logistics Loads/Trucks Manager
      * Author: Steve Fischer
-     * Version: 0.1
+     * Version: 0.2
      */
     define('WPRJS_VERSION', '0.1');
     define('WPRJS_REQUIRED_WP_VERSION', '4.1');
@@ -16,6 +16,7 @@
     define('WPRJS_PLUGIN_NAME', trim( dirname( WPRJS_PLUGIN_BASENAME ), '/' ));
     define('WPRJS_PLUGIN_DIR', untrailingslashit( dirname( WPRJS_PLUGIN ) ));
     define('WPRJS_PLUGIN_TEMPLATES_DIR', WPRJS_PLUGIN_DIR.'/templates');
+    require_once('includes/rjs_routes.php');
 
     class wprjs
     {
@@ -27,9 +28,14 @@
         }
 
         function angularScripts(){
+            wp_enqueue_style( 'bootstrap', plugin_dir_url( __FILE__ ).'css/bootstrap.min.css' );
+            wp_enqueue_style( 'rjs-styles', plugin_dir_url( __FILE__ ).'css/styles.css' );
             // Angular Core
             wp_enqueue_script(
                 'angular-core', plugin_dir_url( __FILE__ ).'js/angular.min.js', array('jquery'), NULL, false );
+            wp_enqueue_script(
+                'angular-bootstrap-tables', plugin_dir_url( __FILE__ ).
+                'js/angular-smart-table.min.js', array('angular-core'), NULL, false );
             wp_enqueue_script(
                 'angular-sanitize', plugin_dir_url( __FILE__ ).
                 'js/angular-sanitize.min.js', array('jquery'), NULL, false );
@@ -39,6 +45,11 @@
                 'html-janitor', plugin_dir_url( __FILE__ ).'js/html-janitor.js', array('jquery'), NULL, false );
             wp_enqueue_script(
                 'angular-app', plugin_dir_url( __FILE__ ).'js/angular-app.js', array('html-janitor'), NULL, false );
+            wp_enqueue_script(
+                'bootstrap-main', plugin_dir_url( __FILE__ ).'js/bootstrap.min.js', array('jquery'), NULL, false );
+            wp_enqueue_script(
+                'bootstrap-angularjs', plugin_dir_url( __FILE__ ).
+                'js/ui-bootstrap-angular.min.js', array('bootstrap-main'), NULL, false );
             // Angular Factories
             /*wp_enqueue_script(
                 'angular-factories', plugin_dir_url( __FILE__ ).
@@ -49,27 +60,8 @@
                 'js/angular-posts-directives.js', array('angular-factories'), NULL, false );*/
             // Template Directory
             $template_directory = array(
-                'list_detail'   => plugin_dir_url( __FILE__ ).'angularjs-templates/list-detail.html',
-                'single_detail' => plugin_dir_url( __FILE__ ).'angularjs-templates/single-detail.html',
-                'new_post'      => plugin_dir_url( __FILE__ ).'angularjs-templates/new-post.html',
-                'post_content'  => plugin_dir_url( __FILE__ ).'angularjs-templates/post-content.html',
+                'post_load' => plugin_dir_url( __FILE__ ).'partials/post-load.html'
             );
-            // TEMPLATE OVERRIDES
-            if( file_exists( get_stylesheet_directory().'/angularjs-templates/list-detail.html' ) ){
-                $template_directory['list_detail'] =
-                    get_stylesheet_directory_uri().'/angularjs-templates/list-detail.html';
-            }
-            if( file_exists( get_stylesheet_directory().'/angularjs-templates/single-detail.html' ) ){
-                $template_directory['single_detail'] =
-                    get_stylesheet_directory_uri().'/angularjs-templates/single-detail.html';
-            }
-            if( file_exists( get_stylesheet_directory().'/angularjs-templates/new-post.html' ) ){
-                $template_directory['new_post'] = get_stylesheet_directory_uri().'/angularjs-templates/new-post.html';
-            }
-            if( file_exists( get_stylesheet_directory().'/angularjs-templates/post-content.html' ) ){
-                $template_directory['post_content'] =
-                    get_stylesheet_directory_uri().'/angularjs-templates/post-content.html';
-            }
             // Localize Variables
             wp_localize_script(
                 'angular-core',
@@ -105,6 +97,7 @@
 
     new wprjs();
     // Register Custom Post Type
+    add_action( 'init', 'wfc_register_post_type', 0 );
     function wfc_register_post_type(){
         $labels = array(
             'name'               => _x( 'Load', 'Post Type General Name', 'text_domain' ),
@@ -144,13 +137,48 @@
         register_post_type( 'wfc_loads', $args );
     }
 
-    // Hook into the 'init' action
-    add_action( 'init', 'wfc_register_post_type', 0 );
     function wp_api_encode_acf( $data, $post, $context ){
-        $data['meta'] = array_merge( $data['meta'], get_fields( $post['ID'] ) );
+        $customMeta   = (array)get_fields( $post['ID'] );
+        $data['meta'] = array_merge( $data['meta'], $customMeta );
         return $data;
     }
 
     if( function_exists( 'get_fields' ) ){
         add_filter( 'json_prepare_post', 'wp_api_encode_acf', 10, 3 );
     }
+
+
+    function wp_api_encode_acf_taxonomy( $data, $post ){
+        $customMeta   = (array)get_fields( $post->taxonomy."_".$post->term_id );
+        $data['meta'] = array_merge( $data['meta'], $customMeta );
+        return $data;
+    }
+
+    function wp_api_encode_acf_user( $data, $post ){
+        $customMeta   = (array)get_fields( "user_".$data['ID'] );
+        $data['meta'] = array_merge( $data['meta'], $customMeta );
+        return $data;
+    }
+
+    add_filter( 'json_prepare_post', 'wp_api_encode_acf', 10, 3 );
+    add_filter( 'json_prepare_page', 'wp_api_encode_acf', 10, 3 );
+    add_filter( 'json_prepare_attachment', 'wp_api_encode_acf', 10, 3 );
+    add_filter( 'json_prepare_term', 'wp_api_encode_acf_taxonomy', 10, 2 );
+    add_filter( 'json_prepare_user', 'wp_api_encode_acf_user', 10, 2 );
+
+    class sg_custom_api
+    {
+
+        function __construct(){
+            add_filter( 'json_prepare_post', array($this, 'post_additions'), 10, 3 );
+        }
+
+        function post_additions( $data, $post, $context ){
+            if( $post['post_type'] === 'wfc_loads' ){
+                $data['wfc_load_meta'] = get_post_meta( $post['ID'] );
+            }
+            return $data;
+        }
+    }
+
+    new sg_custom_api();

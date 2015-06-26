@@ -1,0 +1,8 @@
+/* RJS Web App Styles */
+
+/*
+Per Angularjs instructions
+https://angular-ui.github.io/bootstrap/
+*/
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
