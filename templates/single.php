@@ -10,13 +10,13 @@
     <?php } else{ ?>
         <div id="page-title"><h3><?php the_title(); ?></h3></div>
     <?php } ?>
+    <div class="row">
     <div id="indexwrapper">
     <div id="index-content">
     <div>
     <div id="wfc-rjs-container">
         <div ng-view></div>
     </div>
-
     <?php
         /*    acf_form(
                 array(
@@ -25,7 +25,9 @@
 
     ?>
     <form ng-submit="addLoad()">
-        <input type="text" ng-model="form.name" size="20"/> <input type="submit" value="Add Load"/>
+        <input type="text" ng-model="form.name" size="20" placeholder="title"/>
+        <input type="text" ng-model="form.origin_state" size="20" placeholder="origin state"/>
+        <input type="submit" value="Add Load"/>
     </form>
     <!-- Initialize scripts. -->
     <script type="text/javascript">
@@ -69,6 +71,17 @@
                 ;
                 $scope.form.name = "";
             };
+            $scope.addMetaLoad = function () {
+                postService.addMetaLoad($scope.form.namemeta)
+                    .then(
+                    loadRemoteData,
+                    function (errorMessage) {
+                        console.warn(errorMessage);
+                    }
+                )
+                ;
+                $scope.form.namemeta = "";
+            };
             $scope.removeLoad = function (load) {
                 postService.removeLoad(load.ID)
                     .then(loadRemoteData);
@@ -78,7 +91,9 @@
             // ---
             // I apply the remote data to the local scope.
             function applyRemoteData(newLoads) {
+                console.log(newLoads);
                 $scope.loads = newLoads;
+                $scope.displayedCollection = [].concat($scope.loads);
             }
 
             // I load the remote data from the server.
@@ -95,48 +110,29 @@
             $scope.filterSecId = function (items) {
                 var result = {};
                 angular.forEach(items, function (value, key) {
-                    console.log(value);
-//                    if (!value.hasOwnProperty('wfc_load_meta')) {
-//                        result[key] = "steve";
-//                    }
-//                    if (key == "meta") {
-//                        result[key] = "steve";
-//                    }
+                    angular.forEach(value, function (v, k) {
+//                        console.log(k + " : " + v);
+                        if (k == "meta") {
+                            console.log(v);
+                        }
+                    });
+                    result[key] = value;
                 });
                 return result;
-            }
-            $scope.rowCollection = [
-                {
-                    firstName: 'Laurent',
-                    lastName: 'Renard',
-                    birthDate: new Date('1987-05-21'),
-                    balance: 102,
-                    email: 'whatever@gmail.com'
-                },
-                {
-                    firstName: 'Blandine',
-                    lastName: 'Faivre',
-                    birthDate: new Date('1987-04-25'),
-                    balance: -2323.22,
-                    email: 'oufblandou@gmail.com'
-                },
-                {
-                    firstName: 'Francoise',
-                    lastName: 'Frere',
-                    birthDate: new Date('1955-08-27'),
-                    balance: 42343,
-                    email: 'raymondef@gmail.com'
-                }
-            ];
-            console.log($scope.rowCollection);
-            $scope.getters = {
-                firstName: function (value) {
-                    //this will sort by the length of the first name string
-                    return value.firstName.length;
-                }
-            }
+            };
         });
     // -------------------------------------------------- //
+    app.filter('scfDateFormatter', function () {
+        return function (input) {
+            if (angular.isDefined(input)) {
+                if (input.length >= 8) {
+                    input = input.slice(0, 8);
+                    input = input.slice(4, 6) + '/' + input.slice(6, 8) + '/' + input.slice(0, 4);
+                }
+            }
+            return input;
+        };
+    });
     // -------------------------------------------------- //
     app.service(
         "postService",
@@ -145,39 +141,48 @@
             // Return public API.
             return ({
                 addLoad: addLoad,
+                addMetaLoad: addMetaLoad,
                 getLoads: getLoads,
                 removeLoad: removeLoad
             });
             // ---
             // PUBLIC METHODS.
             // ---
-
-            function addLoad(name) {
+            function addLoad(form) {
+                console.log(form);
                 var request = $http({
                     method: "post",
                     url: wfcLocalized.base + "/posts/?_wp_json_nonce=" + wfcLocalized.nonce,
-                    params: {
-                        action: "add"
-                    },
                     data: {
-                        title: name,
+                        title: form.name,
                         type: 'wfc_loads',
-                        status: 'publish'
+                        status: 'publish',
+                        post_meta: [
+                            {
+                                key: "origin_city",
+                                value: form.origin_city
+                            },
+                            {
+                                key: "_origin_city",
+                                value: "field_5579b36cc6b22"
+                            }
+                        ]
                     }
                 });
                 request.success(function (d) {
-                    addPostMeta(d);
+                    //addMetaLoad(d);
                 });
                 return ( request.then(handleSuccess, handleError) );
             }
 
-            function addPostMeta(d) {
+            function addMetaLoad(namemeta) {
+                var metaArray = [];
                 var request = $http({
                     method: "post",
-                    url: wfcLocalized.base + "/posts/" + d.ID + "/meta/?_wp_json_nonce=" + wfcLocalized.nonce,
+                    url: wfcLocalized.base + "/posts/308/meta?_wp_json_nonce=" + wfcLocalized.nonce,
                     data: {
-                        "wfc_width": "name",
-                        "wfc_height": "1.5"
+                        key: "dfdsfsd",
+                        value: "dfdfd"
                     }
                 });
                 request.success(function (d) {
@@ -186,17 +191,16 @@
                 return ( request.then(handleSuccess, handleError) );
             }
 
-            function getPostMeta(d) {
+            function editLoadMeta(d) {
                 var request = $http({
                     method: "get",
-                    url: wfcLocalized.base + "/posts/298/meta/?_wp_json_nonce=" + wfcLocalized.nonce,
-                    params: {
-                        action: "get"
-                    },
+                    url: wfcLocalized.base + "/posts/308/meta/441?_wp_json_nonce=" + wfcLocalized.nonce,
                     data: {
-                        "wfc_width": "name",
-                        "wfc_height": "1.5"
+                        handle: "ffffffffffffffffffffffffff"
                     }
+                });
+                request.success(function (d) {
+                    console.log(d);
                 });
                 return ( request.then(handleSuccess, handleError) );
             }
@@ -204,10 +208,7 @@
             function getLoads() {
                 var request = $http({
                     method: "get",
-                    url: wfcLocalized.base + "/posts/?type=wfc_loads",
-                    params: {
-                        action: "get"
-                    }
+                    url: wfcLocalized.base + "/posts/?type=wfc_loads"
                 });
                 return ( request.then(handleSuccess, handleError) );
             }
@@ -215,10 +216,7 @@
             function removeLoad(ID) {
                 var request = $http({
                     method: "delete",
-                    url: wfcLocalized.base + "/posts/" + ID + "?force=0&_wp_json_nonce=" + wfcLocalized.nonce,
-                    params: {
-                        action: "delete"
-                    }
+                    url: wfcLocalized.base + "/posts/" + ID + "?_wp_json_nonce=" + wfcLocalized.nonce
                 });
                 return ( request.then(handleSuccess, handleError) );
             }
@@ -276,6 +274,32 @@
     </div>
     <!-- //#sidebar -->
     </div>
-    <!-- //#indexwrapper -->
+    </div>
+    <div class="row">
+        <!-- //#indexwrapper --><!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            Launch demo modal
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <?php acf_form(); ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 <?php get_footer(); ?>

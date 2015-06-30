@@ -4,5 +4,22 @@
 Per Angularjs instructions
 https://angular-ui.github.io/bootstrap/
 */
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
-
+.nav, .pagination, .carousel, .panel-title a{
+    cursor :pointer;
+}
+body{
+    background-image :none !important;
+}
+#container{
+    width            :100% !important;
+    background-image :none !important;
+}
+#sidebar{
+    display :none;
+}
+.st-sort-ascent:before{
+    content :'\25B2';
+}
+.st-sort-descent:before{
+    content :'\25BC';
+}
