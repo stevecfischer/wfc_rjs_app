@@ -1,56 +1,60 @@
-{{message}}
-<table st-table="displayedCollection" st-safe-src="loads" class="table table-striped table-bordered">
-    <thead>
-    <!--    <tr ng-repeat="load in loads">
-            <th ng-repeat="(l_k, l_v) in load.meta">{{l_k | uppercase}}</th>
-        </tr>-->
-    <tr>
-        <th>ID</th>
-        <th st-sort="title">Title</th>
-        <th st-sort="origin_city">Origin City</th>
-        <th st-sort="origin_state">Origin State</th>
-        <th>Destination City</th>
-        <th>Destination State</th>
-        <th>Trailer Type</th>
-        <th>Trailer Options</th>
-        <th>Partial</th>
-        <th>Amount</th>
-        <th>Distance</th>
-        <th>Weight</th>
-        <th>Qty</th>
-        <th>Pickup Date</th>
-        <th>Special Information</th>
-        <th>Handle</th>
-        <th>Handle Phone</th>
-		<th>Delete</th>
-    </tr>
-    </thead>
-    <tbody>
-	<tr ng-repeat="load in filterSecId(displayedCollection)">
-		<td>{{load.ID | uppercase}}</td>
-		<td>{{load.title}}</td>
-		<td>{{load.meta.origin_city}}</td>
-		<td>{{load.meta.origin_state}}</td>
-		<td>{{load.meta.destination_city}}</td>
-		<td>{{load.meta.destination_state}}</td>
-		<td>{{load.meta.trailer_type}}</td>
-		<td>{{load.meta.trailer_options.join(', ')}}</td>
-		<td>{{load.meta.partial}}</td>
-		<td>{{load.meta.amount}}</td>
-		<td>{{load.meta.distance}}</td>
-		<td>{{load.meta.weight_}}</td>
-		<td>{{load.meta.qty}}</td>
-		<td>{{load.meta.pickup_date | scfDateFormatter}}</td>
-		<td>{{load.meta.special_information}}</td>
-		<td>{{load.meta.handle}}</td>
-		<td>{{load.meta.handle_phone}}</td>
-		<td><a ng-click="removeLoad( load )">delete</a></td>
-		</tr>
-<!--    <tr ng-repeat="load in loads">
-        <td ng-repeat="(l_k, l_v) in filterSecId(load.meta)">{{l_v}}</td>
-    </tr>-->
-    </tbody>
-</table>
+<div class="row">
+    {{message}}
+    <table st-table="displayedCollection" st-safe-src="loads" class="table table-striped table-bordered">
+        <thead>
+        <!--    <tr ng-repeat="load in loads">
+                <th ng-repeat="(l_k, l_v) in load.meta">{{l_k | uppercase}}</th>
+            </tr>-->
+        <tr>
+            <th>ID</th>
+            <th st-sort="title">Title</th>
+            <th st-sort="origin_city">Origin City</th>
+            <th st-sort="origin_state">Origin State</th>
+            <th>Destination City</th>
+            <th>Destination State</th>
+            <th>Trailer Type</th>
+            <th>Trailer Options</th>
+            <th>Partial</th>
+            <th>Amount</th>
+            <th>Distance</th>
+            <th>Weight</th>
+            <th>Qty</th>
+            <th>Pickup Date</th>
+            <th>Special Information</th>
+            <th>Handle</th>
+            <th>Handle Phone</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="load in filterSecId(displayedCollection)">
+            <td>{{load.ID | uppercase}}</td>
+            <td>{{load.title}}</td>
+            <td>{{load.meta.origin_city}}</td>
+            <td>{{load.meta.origin_state}}</td>
+            <td>{{load.meta.destination_city}}</td>
+            <td>{{load.meta.destination_state}}</td>
+            <td>{{load.meta.trailer_type}}</td>
+            <td>{{load.meta.trailer_options.join(', ')}}</td>
+            <td>{{load.meta.partial}}</td>
+            <td>{{load.meta.amount}}</td>
+            <td>{{load.meta.distance}}</td>
+            <td>{{load.meta.weight_}}</td>
+            <td>{{load.meta.qty}}</td>
+            <td>{{load.meta.pickup_date | scfDateFormatter}}</td>
+            <td>{{load.meta.special_information}}</td>
+            <td>{{load.meta.handle}}</td>
+            <td>{{load.meta.handle_phone}}</td>
+            <td>
+                <a ng-click="removeLoad( load )">delete</a>
+            </td>
+        </tr>
+        <!--    <tr ng-repeat="load in loads">
+                <td ng-repeat="(l_k, l_v) in filterSecId(load.meta)">{{l_v}}</td>
+            </tr>-->
+        </tbody>
+    </table>
+</div>
 <!--
 <table st-table="rowCollection" class="table table-striped">
     <thead>
@@ -74,3 +78,217 @@
     </tr>
     </tbody>
 </table>-->
+<div class="row">
+    <!-- //#indexwrapper --><!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+        Launch demo modal
+    </button>
+    <!-- Modal -->
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<form ng-submit="addLoad()">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Post New Load</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <i class="icon-calendar"></i>
+
+                        <h3 class="panel-title">Origin</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-4">
+                                <div class="input-group">
+                                    <input type="text" ng-model="form.origin_city" placeholder="origin city"/>
+                                    <input type="hidden" name="form.p_origin_city" ng-value="field_5579b36cc6b22"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="input-group">
+                                    <input type="text" ng-model="form.origin_state" placeholder="origin state"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <i class="icon-calendar"></i>
+
+                        <h3 class="panel-title">Destination</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-4">
+                                <div class="input-group">
+                                    <input type="text" ng-model="form.destination_city" size="20" placeholder="destination city"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="input-group">
+                                    <input type="text" ng-model="form.destination_state" size="2" placeholder="destination state"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading clearfix">
+                            <i class="icon-calendar"></i>
+
+                            <h3 class="panel-title">Trailer Type</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="input-group">
+                                        <select ng-model="form.trailer_type">
+                                            <option value="R" selected="selected">R</option>
+                                            <option value="V">V</option>
+                                            <option value="F">F</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading clearfix">
+                            <i class="icon-calendar"></i>
+
+                            <h3 class="panel-title">Trailer Options</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12">
+                                    <div class="input-group">
+                                        <input type="checkbox" name="trailer_options" ng-model="form.trailer_options.hazmat"> Hazmat
+                                        <input type="checkbox" name="trailer_options" ng-model="form.trailer_options.team"> Team
+                                        <input type="checkbox" name="trailer_options" ng-model="form.trailer_options.expedited"> Expedited
+                                        <input type="checkbox" name="trailer_options" ng-model="form.trailer_options.tarp"> Tarp
+                                        <input type="checkbox" name="trailer_options" ng-model="form.trailer_options.palletexchange"> Pallet Exchange
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <i class="icon-calendar"></i>
+
+                        <h3 class="panel-title">Other Criteria</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-4">
+                                        <div class="input-group">
+                                            <input type="text" ng-model="form.amount" placeholder="amount"/>
+                                            <input type="text" ng-model="form.distance" placeholder="distance"/>
+                                            <input type="text" ng-model="form.length" placeholder="length"/>
+                                            <input type="text" ng-model="form.weight" placeholder="weight"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-4">
+                                        <div class="input-group">
+                                            <input type="text" ng-model="form.width" placeholder="width"/>
+                                            <input type="text" ng-model="form.qty" placeholder="qty"/>
+                                            <input type="text" ng-model="form.extra_stops" placeholder="extra stops"/>
+                                            <select ng-model="form.size"">
+                                            <option value="fulltl">Full/TL</option>
+                                            <option value="partialtl">Partial/TL</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-4">
+                                        <div class="input-group">
+                                            <input type="text" ng-model="form.pickup_date" placeholder="pickup date"/>
+                                            <input type="text" ng-model="form.pickup_time" placeholder="pickup time"/>
+                                            <input type="text" ng-model="form.deliver_date" placeholder="deliver date"/>
+                                            <input type="text" ng-model="form.deliver_time" placeholder="deliver time"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="panel-body">
+                                <div class="col-lg-6 col-sm-6">
+                                    <div class="input-group">
+                                        <input type="checkbox" name="is_favorite" ng-model="form.is_favorite.yes"> Add to Favorite Posts
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-sm-6">
+                                    <div class="input-group">
+                                        <input type="checkbox" name="is_daily" ng-model="form.is_daily.yes"> Daily
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <i class="icon-calendar"></i>
+
+                        <h3 class="panel-title">Special Information</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <textarea name="special_information"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="text" ng-model="form.origin_city" size="20" placeholder="origin city"/>
+        <input type="text" ng-model="form.origin_state" size="20" placeholder="origin state"/>
+        <input type="submit" value="Add Load"/>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" value="Add Load"/>
+    </div>
+</form>
+</div>
+</div>
+</div>

@@ -11,7 +11,7 @@
         <div id="page-title"><h3><?php the_title(); ?></h3></div>
     <?php } ?>
     <div class="row">
-    <div id="indexwrapper">
+    <div id="indexwrapper" class="col-lg-12">
     <div id="index-content">
     <div>
     <div id="wfc-rjs-container">
@@ -24,11 +24,7 @@
                 ) );*/
 
     ?>
-    <form ng-submit="addLoad()">
-        <input type="text" ng-model="form.name" size="20" placeholder="title"/>
-        <input type="text" ng-model="form.origin_state" size="20" placeholder="origin state"/>
-        <input type="submit" value="Add Load"/>
-    </form>
+
     <!-- Initialize scripts. -->
     <script type="text/javascript">
     // Define the module for our AngularJS application.
@@ -41,10 +37,17 @@
                 templateUrl: wfcLocalized.template_directory.post_load,
                 controller: 'GetPage'
             })
+            .when('/manage-trucks/', {
+                templateUrl: wfcLocalized.template_directory.post_load,
+                controller: 'ManageTrucks'
+            })
         $locationProvider.html5Mode(true);
     });
     app.controller('GetPage', function ($scope, $rootScope) {
         $rootScope.message = 'Manage Load Postings';
+    });
+    app.controller('ManageTrucks', function ($scope, $rootScope) {
+        $rootScope.message = 'Manage Truck Postings';
     });
     // -------------------------------------------------- //
     // I control the main demo.
@@ -61,7 +64,7 @@
             // PUBLIC METHODS.
             // ---
             $scope.addLoad = function () {
-                postService.addLoad($scope.form.name)
+                postService.addLoad($scope.form)
                     .then(
                     loadRemoteData,
                     function (errorMessage) {
@@ -71,17 +74,17 @@
                 ;
                 $scope.form.name = "";
             };
-            $scope.addMetaLoad = function () {
-                postService.addMetaLoad($scope.form.namemeta)
-                    .then(
-                    loadRemoteData,
-                    function (errorMessage) {
-                        console.warn(errorMessage);
-                    }
-                )
-                ;
-                $scope.form.namemeta = "";
-            };
+            /*            $scope.addMetaLoad = function () {
+             postService.addMetaLoad($scope.form.namemeta)
+             .then(
+             loadRemoteData,
+             function (errorMessage) {
+             console.warn(errorMessage);
+             }
+             )
+             ;
+             $scope.form.namemeta = "";
+             };*/
             $scope.removeLoad = function (load) {
                 postService.removeLoad(load.ID)
                     .then(loadRemoteData);
@@ -91,7 +94,7 @@
             // ---
             // I apply the remote data to the local scope.
             function applyRemoteData(newLoads) {
-                console.log(newLoads);
+                //console.log(newLoads);
                 $scope.loads = newLoads;
                 $scope.displayedCollection = [].concat($scope.loads);
             }
@@ -113,7 +116,7 @@
                     angular.forEach(value, function (v, k) {
 //                        console.log(k + " : " + v);
                         if (k == "meta") {
-                            console.log(v);
+                            //console.log(v);
                         }
                     });
                     result[key] = value;
@@ -164,7 +167,7 @@
                             },
                             {
                                 key: "_origin_city",
-                                value: "field_5579b36cc6b22"
+                                value: form._origin_city
                             }
                         ]
                     }
@@ -186,7 +189,7 @@
                     }
                 });
                 request.success(function (d) {
-                    console.log(d);
+                    //console.log(d);
                 });
                 return ( request.then(handleSuccess, handleError) );
             }
@@ -200,7 +203,7 @@
                     }
                 });
                 request.success(function (d) {
-                    console.log(d);
+                    //console.log(d);
                 });
                 return ( request.then(handleSuccess, handleError) );
             }
@@ -258,48 +261,7 @@
         } ?>
     </div>
     <!-- //#index-content -->
-    <div id="sidebar">
-        <?php get_sidebar(); ?>
-        <div id="image-box">
-            <a href="/?page_id=19">
-                <img src="<?php bloginfo( 'template_url' ); ?>/images/location-contact-sm.png" width="251" height="123" border="0"/>
-            </a>
-        </div>
-        <br style="clear:both"/>
-        <div id="image-box">
-            <a href="/?page_id=4">
-                <img src="<?php bloginfo( 'template_url' ); ?>/images/customer-carrier-page.png" width="251" height="123" border="0"/>
-            </a>
-        </div>
     </div>
-    <!-- //#sidebar -->
-    </div>
-    </div>
-    <div class="row">
-        <!-- //#indexwrapper --><!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-            Launch demo modal
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                    </div>
-                    <div class="modal-body">
-                        <?php acf_form(); ?>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     </div>
 <?php get_footer(); ?>
