@@ -1,0 +1,52 @@
+<div class="row">
+    <span class="col-lg-1">
+    </span>
+    <span class="col-lg-10">
+        <table st-table="displayedCollection" st-safe-src="loads" class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Equipment</th>
+                <th>Options</th>
+                <th>Full/Partial</th>
+                <th>Pickup Date</th>
+                <th>Delivery Date</th>
+                <th>Payment</th>
+                <th st-sort="meta.origin_city">Origin City</th>
+                <th st-sort="meta.origin_state">ST</th>
+                <th>Destination City</th>
+                <th>ST</th>
+                <th>Handle</th>
+                <th>Handle Phone</th>
+                <th>Tools</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="load in filterSecId(displayedCollection)">
+                <td>{{load.ID}}</td>
+                <td>{{load.post_title}}</td>
+                <td>{{load.meta.trailer_type}}</td>
+                <td>{{load.meta.trailer_options.join(', ')}}</td>
+                <td>{{load.meta.partial}}</td>
+                <td>{{load.meta.pickup_date | scfDateFormatter}}</td>
+                <td>{{load.meta.deliever_date | scfDateFormatter}}</td>
+                <td>{{load.meta.amount}}</td>
+                <td>{{load.meta.origin_city}}</td>
+                <td>{{load.meta.origin_state}}</td>
+                <td>{{load.meta.destination_city}}</td>
+                <td>{{load.meta.destination_state}}</td>
+                <td>{{load.meta.handle}}</td>
+                <td>{{load.meta.handle_phone}}</td>
+                <td>
+                    <a ng-click="editLoad( load )"><i class="glyphicon glyphicon-pencil"></i></a>
+                    |
+                    <a ng-click="removeLoad( load )"><i class="glyphicon glyphicon-remove"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </span>
+        <span class="col-lg-1">
+    </span>
+</div>
