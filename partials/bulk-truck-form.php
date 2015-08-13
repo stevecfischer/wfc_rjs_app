@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="rjsBulkForm.html">
     <h3>Bulk Creation</h3>
-    <div class="container">
+    <div>
         <div class="row">
             <form id="bulkTruckForm" name="bulk" ng-submit="addSingletruck(bulk.$valid)" novalidate>
                 <fieldset>
@@ -106,7 +106,7 @@
                     <td>{{ singleTruck.wfc_rjs_trucks_trailer_type }}</td>
                     <td>{{ singleTruck.wfc_rjs_trucks_weight }}</td>
                     <td>{{ singleTruck.wfc_rjs_trucks_min_distance }}</td>
-                    <td>{{ singleTruck.wfc_rjs_trucks_pickup_date }}</td>
+                    <td>{{ singleTruck.wfc_rjs_trucks_pickup_date | scfDateFormatter }}</td>
                     <td>{{ singleTruck | scfTrailerOptionsConcat }}</td>
                     <td>{{ singleTruck.wfc_rjs_trucks_special_information }}</td>
                     <td>
@@ -118,6 +118,7 @@
         </div>
         <form ng-submit="submitBulkTruck()">
             <button type="submit" class="btn btn-success btn-sm">Post All Trucks</button>
+            <button type="button" class="btn btn-danger btn-sm" ng-click="cancel()">Cancel</button>
         </form>
     </div>
 </script>

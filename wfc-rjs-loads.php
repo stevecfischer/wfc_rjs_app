@@ -22,6 +22,8 @@
     require_once('includes/rjs_routes.php');
     require_once('includes/rjs_utilities.php');
     require_once('includes/rjs_post_type_manager.php');
+
+
     /*
     ===============================
     REGISTER CUSTOM POST TYPE WITH CUSTOM META BOX OPTIONS
@@ -158,6 +160,7 @@
         }
 
         function angularScripts(){
+            global $us_states_array;
             wp_enqueue_style( 'bootstrap', plugin_dir_url( __FILE__ ).'css/bootstrap.min.css' );
             wp_enqueue_style( 'rjs-styles', plugin_dir_url( __FILE__ ).'css/styles.css' );
             // Angular Core
@@ -208,15 +211,22 @@
                 'js/ui-bootstrap-angular.min.js', array('bootstrap-main'), NULL, false );
             // Template Directory
             $template_directory = array(
-                'rjs_loads'         => plugin_dir_url( __FILE__ ).'partials/post-rjs_loads.php',
-                'rjs_trucks'        => plugin_dir_url( __FILE__ ).'partials/post-rjs_trucks.php',
-                'post_archive'      => plugin_dir_url( __FILE__ ).'partials/archive-load.html',
-                'favorite_postings' => plugin_dir_url( __FILE__ ).'partials/favorite-postings.html',
-                'archive_truck'     => plugin_dir_url( __FILE__ ).'partials/archive-truck.html',
-                'rjs_pagination'    => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
-                'item_edit'         => plugin_dir_url( __FILE__ ).'partials/itemEdit.html'
+                'rjs_loads'      => plugin_dir_url( __FILE__ ).'partials/post-rjs_loads.php',
+                'rjs_trucks'     => plugin_dir_url( __FILE__ ).'partials/post-rjs_trucks.php',
+                'post_archive'   => plugin_dir_url( __FILE__ ).'partials/archive-load.html',
+                'favorite_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-posts.php',
+                'archive_truck'  => plugin_dir_url( __FILE__ ).'partials/archive-truck.html',
+                'rjs_pagination' => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
+                'item_edit'      => plugin_dir_url( __FILE__ ).'partials/itemEdit.html'
             );
             // Localize Variables
+
+            $indexedOnly = array();
+
+foreach ($us_states_array as $row) {
+    $indexedOnly[] = array('name' => $row, 'value' => $row);
+}
+
             wp_localize_script(
                 'angular-core',
                 'wfcLocalized',
@@ -227,7 +237,8 @@
                     'nonce'              => wp_create_nonce( 'wp_json' ),
                     'template_directory' => $template_directory,
                     'today_date'         => date( "Y-m-d", strtotime( "today midnight" ) ),
-                    'plugin_path'        => plugin_dir_url( __FILE__ )
+                    'plugin_path'        => plugin_dir_url( __FILE__ ),
+                    'us_states' => json_encode($indexedOnly),
                 )
             );
         }

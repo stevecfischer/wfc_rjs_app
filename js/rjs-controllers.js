@@ -3,22 +3,10 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     $scope.deletedTrucks = [];
     $scope.quicktruck = {};
     $scope.bulkDeleteSelection = [];
-    $scope.quicktruck = {
-        wfc_rjs_trucks_pickup_date: new Date(Date.now())
-    };
-
-    $scope.toggleBulkDelete = function toggleSelection(truckPostId) {
-        var idx = $scope.bulkDeleteSelection.indexOf(truckPostId);
-        // is currently selected
-        if (idx > -1) {
-            $scope.bulkDeleteSelection.splice(idx, 1);
-        }
-
-        // is newly selected
-        else {
-            $scope.bulkDeleteSelection.push(truckPostId);
-        }
-    };
+    $scope.usStates = angular.fromJson(wfcLocalized.us_states);
+    //$scope.quicktruck = {
+    //    wfc_rjs_trucks_pickup_date: new Date(Date.now())
+    //};
     if ($routeParams.type == "rjs_loads") {
         $scope.rjsposttype = "loads";
     } else {
@@ -32,25 +20,27 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     $scope.createPost = function () {
         var modalInstance = $modal.open({
             templateUrl: 'rjsTruckForm.html',
-            backdrop: true,
+            backdrop: 'static',
             windowClass: 'modal',
             controller: function ($scope, $modalInstance, $log, $http, loading) {
-                $scope.truck = {
-                    rjsmeta: {
-                        wfc_rjs_trucks_pickup_date: new Date(Date.now())
-                    }
-                };
+                $scope.usStates = angular.fromJson(wfcLocalized.us_states);
+                //$scope.truck = {
+                //    rjsmeta: {
+                //        wfc_rjs_trucks_pickup_date: new Date(Date.now())
+                //    }
+                //};
                 $scope.submitEditTruck = function (isValid) {
                     if (isValid) {
                         $scope.loading = true;
                         //console.log($scope.truck);
                         truckService.createTruck($scope.truck)
+                        a
                             .then(loadRemoteData);
                         $modalInstance.dismiss($scope.loading);
                     }
                 }
                 $scope.cancel = function () {
-                    $modalInstance.dismiss();
+                    $modalInstance.close();
                 };
             },
             resolve: {
@@ -63,13 +53,12 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
             $scope.loading = n;
         }, function (n) {
             $scope.loading = n;
-            $log.info('Modal dismissed at: ' + new Date());
         });
     };
     $scope.quickTruckPost = function (isValid) {
         if (isValid) {
-            console.log($scope.quicktruck);
-            console.log($scope.quickNewTruck);
+            //console.log($scope.quicktruck);
+            //console.log($scope.quickNewTruck);
             $scope.loading = true;
             truckService.quickCreateTruck($scope.quicktruck)
                 .then(loadRemoteData);
@@ -92,7 +81,7 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                             $modalInstance.dismiss($scope.loading);
                         };
                         $scope.cancel = function () {
-                            $modalInstance.dismiss();
+                            $modalInstance.close();
                         };
                     },
                     resolve: {
@@ -107,43 +96,12 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
             $scope.loading = n;
         }, function (n) {
             $scope.loading = n;
-            $log.info('Modal dismissed at: ' + new Date());
         });
-    }
+    };
     $scope.deletePost = function (ID) {
-        //$scope.loading = true;
+        $scope.loading = true;
         truckService.deleteTruck(ID)
             .then(loadRemoteData);
-    }
-    $scope.bulkDeleteTrucks = function () {
-        $scope.loading = true;
-        angular.forEach($scope.bulkDeleteSelection, function (value, key) {
-            $scope.deletePost(value);
-        });
-    }
-    ///////////////////////
-//// FAVORITE POSTINGS SECTION
-////
-///////
-    $scope.openFavModal = function () {
-        var modalInstance = $modal.open({
-            templateUrl: 'rjsFavorite.html',
-            backdrop: 'static',
-            windowClass: 'modal',
-            size: 'lg',
-            resolve: {
-                loading: function () {
-                    return $scope.loading;
-                }
-            },
-            controller: 'FavoriteCtrl'
-        });
-        modalInstance.result.then(function (n) {
-            $scope.loading = n;
-        }, function (n) {
-            $scope.loading = n;
-            $log.info('Modal dismissed at: ' + new Date());
-        });
     };
     ///////////////////////
     //// BULK POSTINGS SECTION
@@ -152,25 +110,22 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     $scope.openBulkModal = function () {
         var modalInstance = $modal.open({
             templateUrl: 'rjsBulkForm.html',
-            backdrop: true,
+            backdrop: 'static',
             windowClass: 'modal',
-            size: 'wfc-lg',
+            size: 'lg wfc-modal-lg',
             resolve: {
                 loading: function () {
                     return $scope.loading;
                 }
             },
             controller: function ($scope, $modalInstance, $log, $http, $filter, loading) {
-                $scope.scfStash = "";
                 $scope.loading = true;
                 $scope.bulkTrucks = [];
-                $scope.bulksingletruckformdata = {
-                    wfc_rjs_trucks_pickup_date: new Date(Date.now())
-                };
+                //$scope.bulksingletruckformdata = {
+                //    wfc_rjs_trucks_pickup_date: new Date(Date.now())
+                //};
                 $scope.addSingletruck = function (isValid) {
                     if (isValid) {
-                        console.log($scope.bulksingletruckformdata);
-                        var singleTruck = $scope.bulksingletruckformdata;
                         $scope.bulkTrucks.push($scope.bulksingletruckformdata);
                         $scope.bulksingletruckformdata = '';
                     }
@@ -183,13 +138,32 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                         .then(loadRemoteData);
                     $modalInstance.dismiss($scope.loading);
                 }
+                $scope.cancel = function () {
+                    $modalInstance.close();
+                };
             }
         });
+        //@sftodo: what does this do?
         modalInstance.result.then(function (n) {
             $scope.loading = n;
         }, function (n) {
             $scope.loading = n;
-            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+    $scope.toggleBulkDelete = function toggleSelection(truckPostId) {
+        var idx = $scope.bulkDeleteSelection.indexOf(truckPostId);
+        if (idx > -1) {
+            $scope.bulkDeleteSelection.splice(idx, 1);
+        } else {
+            $scope.bulkDeleteSelection.push(truckPostId);
+        }
+    };
+    $scope.bulkDeleteTrucks = function () {
+        // @sftodo: try to pass all id's at once instead of
+        // @sftodo: looping it.  Send an array of id's.
+        $scope.loading = true;
+        angular.forEach($scope.bulkDeleteSelection, function (value, key) {
+            $scope.deletePost(value);
         });
     };
     // ---
@@ -237,34 +211,48 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         );
     }
 });
-app.controller('FavoriteCtrl', function ($scope, $modalInstance, $log, $http, $filter, loading, truckService, $timeout) {
+app.controller('FavoriteCtrl', function ($scope, $log, $http, $filter, truckService, $timeout, $modal, $routeParams) {
+    if ($routeParams.type == "rjs_loads") {
+        $scope.rjsposttype = "loads";
+    } else {
+        $scope.rjsposttype = "trucks";
+    }
+    $scope.trucks = [];
+    $scope.rowCollection = [];
+    $scope.truck = {};
     $scope.loading = true;
-    $scope.rowFavCollection = [];
-    $scope.quicktruck = {
-        rjsmeta: {
-            wfc_rjs_trucks_pickup_date: new Date(Date.now())
-        }
-    };
-    $scope.editFavoriteTruck = function (postObj) {
-        console.log(postObj);
-        $scope.loading = true;
-        console.log($scope.quicktruck.rjsmeta);
-        console.log($scope.editFavTruck);
-        $scope.loading = true;
-        truckService.editTruck($scope.quicktruck)
-            .then(loadRemoteData);
-        $scope.quicktruck = '';
-        /*        $scope.truck = postObj;
-         $scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date = new Date($scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date);
-         $scope.selection = $scope.truck.rjsmeta.wfc_rjs_trucks_trailer_options;
-         $scope.submitEditTruck = function () {
-         truckService.editTruck($scope.truck)
-         .then(loadRemoteData);
-         $modalInstance.dismiss($scope.loading);
-         };
-         $scope.cancel = function () {
-         $modalInstance.dismiss();
-         };*/
+    $scope.editPost = function (postObj) {
+        var modalInstance = $modal.open({
+                    templateUrl: 'rjsTruckForm.html',
+                    backdrop: 'static',
+                    windowClass: 'modal',
+                    controller: function ($scope, $modalInstance, $log, $http, $filter, loading) {
+                        $scope.loading = true;
+                        $scope.truck = postObj;
+                        $scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date = new Date($scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date);
+                        $scope.selection = $scope.truck.rjsmeta.wfc_rjs_trucks_trailer_options;
+                        $scope.submitEditTruck = function () {
+                            truckService.editTruck($scope.truck)
+                                .then(loadRemoteData);
+                            $modalInstance.dismiss($scope.loading);
+                        };
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss();
+                        };
+                    },
+                    resolve: {
+                        loading: function () {
+                            return $scope.loading;
+                        }
+                    }
+                }
+            )
+            ;
+        modalInstance.result.then(function (n) {
+            $scope.loading = n;
+        }, function (n) {
+            $scope.loading = n;
+        });
     }
     //request favorite posts
     loadRemoteData();
@@ -283,8 +271,7 @@ app.controller('FavoriteCtrl', function ($scope, $modalInstance, $log, $http, $f
 
     function applyRemoteData(p) {
         //$scope.trucks = p;
-        console.log(p);
-        $scope.rowFavCollection = p;
+        $scope.rowCollection = p;
 //        $scope.trucks = [].concat($scope.rowCollection);
     }
 });

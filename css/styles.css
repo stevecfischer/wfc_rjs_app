@@ -4,6 +4,9 @@
 Per Angularjs instructions
 https://angular-ui.github.io/bootstrap/
 */
+#wfc-rjs-container a{
+    cursor: pointer;
+}
 .nav, .pagination, .carousel, .panel-title a{
     cursor :pointer;
 }
@@ -23,7 +26,7 @@ body{
 .st-sort-descent:before{
     content :'\25BC';
 }
-@media (min-width :768px){
+/* @media (min-width :768px){ */
     .wfc-modal-dialog .modal-dialog{
         /*width :70%;*/
     }
@@ -98,7 +101,7 @@ body{
     .wfc-table-row{
         margin-bottom:5px;
     }
-}
+/* } */
 
 /** bootstrap loading animation **/
 .glyphicon-refresh-animate {

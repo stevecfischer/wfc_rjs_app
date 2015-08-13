@@ -15,15 +15,13 @@
                 </div>
                 <div class="col-md-2">
                     <label class="control-label" for="origin_state">Origin State</label>
-                    <select id="origin_state" ng-model="truck.rjsmeta.wfc_rjs_trucks_origin_state" name="wfc_rjs_loads_origin_state">
-                        <?php foreach( $us_states_array as $k => $v ): ?>
-                            <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <select id="origin_state" name="wfc_rjs_trucks_origin_state"
+                            ng-init="quicktruck.wfc_rjs_trucks_origin_state = usStates[0].value"
+                            ng-model="quicktruck.wfc_rjs_trucks_origin_state" ng-options="option.value as option.name for option in usStates"></select>
                 </div>
                 <div class="col-md-4">
                     <label class="control-label" for="dest_city">Dest. City</label>
-                    <input id="dest_city" ng-model="truck.rjsmeta.wfc_rjs_trucks_dest_city" name="wfc_rjs_loads_dest_city" type="text" class="form-control input-md">
+                    <input id="dest_city" ng-model="truck.rjsmeta.wfc_rjs_trucks_dest_city" name="wfc_rjs_trucks_dest_city" type="text" class="form-control input-md">
                     <div class="row">
                         <div class="col-md-12">
                             <label class="control-label" for="wfc_rjs_trucks_dest_radius">Radius</label>
@@ -32,12 +30,11 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <label class="control-label" for="selectbasic">Dest. State</label>
-                    <select id="selectbasic" ng-model="truck.rjsmeta.wfc_rjs_trucks_dest_state" name="wfc_rjs_loads_dest_state">
-                        <?php foreach( $us_states_array as $k => $v ): ?>
-                            <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <label class="control-label" for="wfc_rjs_trucks_dest_state">Dest. State</label><br />
+
+                    <select id="origin_state" name="wfc_rjs_trucks_dest_state"
+                            ng-init="quicktruck.wfc_rjs_trucks_dest_state = usStates[0].value"
+                            ng-model="quicktruck.wfc_rjs_trucks_dest_state" ng-options="option.value as option.name for option in usStates"></select>
                 </div>
             </div>
             <div class="row">
@@ -137,8 +134,9 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <label class="control-label" for="textarea">Special Information</label>
-                    <textarea id="textarea" ng-model="truck.rjsmeta.wfc_rjs_trucks_special_information"></textarea>
+                    <label class="control-label" for="special-info">Special Information</label>
+                    <br/>
+                    <textarea class="form-control" rows="3" id="special-info" ng-model="truck.rjsmeta.wfc_rjs_trucks_special_information"></textarea>
                 </div>
             </div>
             <div class="row">
@@ -156,8 +154,7 @@
             <span class="glyphicon glyphicon-flash"></span>
             Submit!
         </button>
-        <button class="btn btn-danger btn-sm" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-danger btn-sm" ng-click="cancel()">Cancel</button>
     </form>
-
     <!-- {{ truck | json }} -->
 </script>

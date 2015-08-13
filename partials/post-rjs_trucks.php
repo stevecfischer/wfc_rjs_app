@@ -7,7 +7,7 @@
         |
         <a href="{{wfcLocalized.site}}archive-posts/?type=rjs_{{rjsposttype}}&status=archive">Historical Posts</a>
         |
-        <a ng-click="openFavModal()">Favorite Postings</a>
+        <a href="{{wfcLocalized.site}}favorite-posts/?type=rjs_{{rjsposttype}}">Favorite Postings</a>
     </span>
     <span class="col-md-4">
         <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_loads&status=current">Manage Loads</a>
@@ -31,11 +31,9 @@
                 <div class="col-md-1">
                     <label class="control-label" for="origin_state">St</label>
                     <br/>
-                    <select id="origin_state" ng-model="quicktruck.wfc_rjs_trucks_origin_state" name="wfc_rjs_loads_origin_state">
-                        <?php foreach( $us_states_array as $k => $v ): ?>
-                            <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <select id="origin_state" name="wfc_rjs_trucks_origin_state"
+                            ng-init="quicktruck.wfc_rjs_trucks_origin_state = usStates[0].value"
+                            ng-model="quicktruck.wfc_rjs_trucks_origin_state" ng-options="option.value as option.name for option in usStates"></select>
                 </div>
                 <div class="col-md-1">
                     <label class="control-label" for="wfc_rjs_trucks_trailer_type">Eq</label>
@@ -47,16 +45,14 @@
                 </div>
                 <div class="col-md-2">
                     <label class="control-label" for="dest_city">Dest.</label>
-                    <input id="dest_city" ng-model="quicktruck.wfc_rjs_trucks_dest_city" name="wfc_rjs_loads_dest_city" type="text" class="form-control input-md">
+                    <input id="dest_city" ng-model="quicktruck.wfc_rjs_trucks_dest_city" name="wfc_rjs_trucks_dest_city" type="text" class="form-control input-md">
                 </div>
                 <div class="col-md-1">
-                    <label class="control-label" for="selectbasic">St</label>
+                    <label class="control-label" for="dest_state">St</label>
                     <br/>
-                    <select id="selectbasic" ng-model="quicktruck.wfc_rjs_trucks_dest_state" name="wfc_rjs_loads_dest_state">
-                        <?php foreach( $us_states_array as $k => $v ): ?>
-                            <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <select id="dest_state" name="wfc_rjs_trucks_dest_state"
+                            ng-init="quicktruck.wfc_rjs_trucks_dest_state = usStates[0].value"
+                            ng-model="quicktruck.wfc_rjs_trucks_dest_state" ng-options="option.value as option.name for option in usStates"></select>
                 </div>
                 <div class="col-md-2">
                     <label class="control-label">LTL
@@ -101,12 +97,12 @@
                 <td><input type="checkbox" ng-click="toggleBulkDelete(truck.ID)"></td>
                 <td>{{truck.rjsmeta.wfc_rjs_trucks_origin_city}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_trucks_origin_state}}</td>
-                <td>{{truck.rjsmeta.wfc_rjs_trucks_trailer_type}}</td>
+                <td width="20">{{truck.rjsmeta.wfc_rjs_trucks_trailer_type}}</td>
                 <td>{{truck.rjsmeta.trailerOptions.join(', ')}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_trucks_size}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_trucks_pickup_date | scfDateFormatter}}</td>
-                <td>{{truck.rjsmeta.wfc_rjs_trucks_rate_per_mile}}</td>
-                <td>{{truck.rjsmeta.wfc_rjs_trucks_special_information}}</td>
+                <td width="20">{{truck.rjsmeta.wfc_rjs_trucks_rate_per_mile}}</td>
+                <td width="200">{{truck.rjsmeta.wfc_rjs_trucks_special_information}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_trucks_handle}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_trucks_handle_phone}}</td>
                 <!--<td>{{truck.rjsmeta.wfc_rjs_trucks_to_hazmat}}</td>-->

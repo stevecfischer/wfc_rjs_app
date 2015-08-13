@@ -60,8 +60,6 @@ app.config(function ($routeProvider, $locationProvider) {
                 if ($routeParams.type == "rjs_loads") {
                     return wfcLocalized.template_directory.rjs_loads;
                 } else {
-                    console.log($routeParams.type);
-                    console.log("11");
                     return wfcLocalized.template_directory.rjs_trucks;
                 }
             },
@@ -76,6 +74,12 @@ app.config(function ($routeProvider, $locationProvider) {
                 }
             },
             controller: 'TruckController'
+        })
+        .when('/favorite-posts/', {
+            templateUrl: function ($routeParams) {
+                return wfcLocalized.template_directory.favorite_posts;
+            },
+            controller: 'FavoriteCtrl'
         });
     $locationProvider.html5Mode(true);
 });
@@ -198,6 +202,7 @@ app.factory('postFactory', function ($resource) {
 // -------------------------------------------------- //
 app.filter('scfDateFormatter', function () {
     return function (input) {
+        console.log(input);
         if (angular.isDefined(input)) {
             if (input.length >= 10) {
                 input = input.slice(5, 6) + input.slice(6, 10) + "-" + input.slice(0, 4);

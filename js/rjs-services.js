@@ -26,6 +26,7 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
         });
         return ( request.then(handleSuccess, handleError) );
     }
+
     function createTruck(postObj) {
         postObj.rjsmeta.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.rjsmeta.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
         var data = {
@@ -41,6 +42,7 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
         });
         return ( request.then(handleSuccess, handleError) );
     }
+
     function quickCreateTruck(postObj) {
         postObj.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
         var data = {
@@ -56,6 +58,7 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
         });
         return ( request.then(handleSuccess, handleError) );
     }
+
     function editTruck(postObj) {
         postObj.rjsmeta.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.rjsmeta.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
         var data = {
@@ -82,27 +85,33 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
 
     // I get all of the trucks in the remote collection.
     function getTrucks() {
+        console.log($routeParams);
         if ($routeParams.status == "archive") {
-            $routeParams.status = "<=";
+            $routeParams.statusquery = "<=";
         } else {
-            $routeParams.status = ">=";
+            $routeParams.statusquery = ">=";
         }
         var request = $http({
             method: 'GET',
-            url: "/cms-wfc/wp-json/posts/?type=" + $routeParams.type + "&filter[meta_query][key]=wfc_rjs_trucks_pickup_date&filter[meta_query][value]=" + wfcLocalized.today_date + "&filter[meta_query][compare]=" + $routeParams.status + ""
+            url: "/cms-wfc/wp-json/posts/?type=" +
+            $routeParams.type + "&filter[meta_query][key]=wfc_" +
+            $routeParams.type + "_pickup_date&filter[meta_query][value]=" +
+            wfcLocalized.today_date + "&filter[meta_query][compare]=" + $routeParams.statusquery + ""
         });
         return ( request.then(handleSuccess, handleError) );
     }
 
     function getFavTrucks() {
         /*
-        http://rjs.wfcdemo.com/cms-wfc/wp-json/posts/?type=rjs_trucks&filter[meta_query][key]=wfc_rjs_trucks_add_to_favorite_posts&filter[meta_query][value]=Yes&filter[meta_query][compare]===
-        get favorite trucks query
+         http://rjs.wfcdemo.com/cms-wfc/wp-json/posts/?type=rjs_trucks&filter[meta_query][key]=wfc_rjs_trucks_add_to_favorite_posts&filter[meta_query][value]=Yes&filter[meta_query][compare]===
+         get favorite trucks query
 
          */
         var request = $http({
             method: 'GET',
-            url: "/cms-wfc/wp-json/posts/?type=rjs_trucks&filter[meta_query][key]=wfc_rjs_trucks_add_to_favorite_posts&filter[meta_query][value]=Yes&filter[meta_query][compare]==="
+            url: "/cms-wfc/wp-json/posts/?type=" +
+            $routeParams.type + "&filter[meta_query][key]=wfc_" +
+            $routeParams.type + "_add_to_favorite_posts&filter[meta_query][value]=Yes&filter[meta_query][compare]==="
         });
         return ( request.then(handleSuccess, handleError) );
     }
