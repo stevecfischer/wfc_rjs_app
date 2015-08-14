@@ -5,8 +5,20 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     $scope.bulkDeleteSelection = [];
     $scope.usStates = angular.fromJson(wfcLocalized.us_states);
     //$scope.quicktruck = {
-    //    wfc_rjs_trucks_pickup_date: new Date(Date.now())
+    //    wfc_rjs_trucks_pickup_date: new Date()
     //};
+    $scope.todayDate = new Date();
+    $scope.open = function () {
+        $scope.status.opened = true;
+    };
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+    };
+    $scope.format = 'MM-dd-yyyy';
+    $scope.status = {
+        opened: false
+    };
     if ($routeParams.type == "rjs_loads") {
         $scope.rjsposttype = "loads";
     } else {
@@ -21,6 +33,7 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         var modalInstance = $modal.open({
             templateUrl: 'rjsTruckForm.html',
             backdrop: 'static',
+            size: 'lg wfc-modal-lg',
             windowClass: 'modal',
             controller: function ($scope, $modalInstance, $log, $http, loading) {
                 $scope.usStates = angular.fromJson(wfcLocalized.us_states);
@@ -57,18 +70,22 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     };
     $scope.quickTruckPost = function (isValid) {
         if (isValid) {
-            //console.log($scope.quicktruck);
-            //console.log($scope.quickNewTruck);
             $scope.loading = true;
             truckService.quickCreateTruck($scope.quicktruck)
                 .then(loadRemoteData);
-            $scope.quicktruck = '';
+            $scope.resetForm($scope.quicktruck);
         }
     };
+    $scope.resetForm = function(postModal){
+        console.log(postModal);
+        postModal = '';
+        //console.log($scope.quickNewTruck);
+    }
     $scope.editPost = function (postObj) {
         var modalInstance = $modal.open({
                     templateUrl: 'rjsTruckForm.html',
                     backdrop: 'static',
+                    size: 'lg wfc-modal-lg',
                     windowClass: 'modal',
                     controller: function ($scope, $modalInstance, $log, $http, $filter, loading) {
                         $scope.loading = true;

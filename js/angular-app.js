@@ -202,7 +202,6 @@ app.factory('postFactory', function ($resource) {
 // -------------------------------------------------- //
 app.filter('scfDateFormatter', function () {
     return function (input) {
-        console.log(input);
         if (angular.isDefined(input)) {
             if (input.length >= 10) {
                 input = input.slice(5, 6) + input.slice(6, 10) + "-" + input.slice(0, 4);

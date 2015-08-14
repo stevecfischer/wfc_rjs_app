@@ -5,7 +5,7 @@ Per Angularjs instructions
 https://angular-ui.github.io/bootstrap/
 */
 #wfc-rjs-container a{
-    cursor: pointer;
+    cursor :pointer;
 }
 .nav, .pagination, .carousel, .panel-title a{
     cursor :pointer;
@@ -27,101 +27,133 @@ body{
     content :'\25BC';
 }
 /* @media (min-width :768px){ */
-    .wfc-modal-dialog .modal-dialog{
-        /*width :70%;*/
-    }
-    #wfc-rjs-container table{
-        font-size :12px;
-        /*width:1240px;*/
-        /*margin: 0 auto;*/
-    }
-    #wfc-rjs-container .table > thead > tr > th, #wfc-rjs-container .table > tbody > tr > td{
-        padding    :2px;
-        text-align :center;
+.wfc-modal-dialog .modal-dialog{
+    /*width :70%;*/
+}
+#wfc-rjs-container table{
+    font-size :12px;
+    /*width:1240px;*/
+    /*margin: 0 auto;*/
+}
+#wfc-rjs-container .table > thead > tr > th, #wfc-rjs-container .table > tbody > tr > td{
+    padding    :2px;
+    text-align :center;
 
-    }
-    .acf-fields > .acf-field.wfc-acf-message{
-        border-top :none;
-    }
-    .acf-fields > .acf-field.wfc-acf-message .acf-input-wrap{
-        overflow :visible;
-    }
-    .wfc-quick-field > li.acf-input input{
-        /*width :20px;*/
-    }
-    ul.wfc-quick-field{
-        width :135px !important;
-    }
-    .acf-field.wfc-quick-field .acf-label{
-        vertical-align :top;
-        margin         :0;
-    }
-    .wfc-quick-post-form .acf-form-submit{
-        float       :right;
-        padding-top :36px;
-    }
-    .wfc-quick-post-form .acf-field .acf-label label{
-        font-size :12px;
-        margin    :0;
-    }
-    .wfc-acf-first{
-        clear :left !important;
-    }
-    #post-load-tab .acf-fields > .acf-field{
-        padding :10px 12px
-    }
-    #post-load-tab .acf-label{
-        display :none;
-    }
-    #post-load-tab .acf-field input[type="text"], #post-load-tab .acf-field input[type="password"], #post-load-tab .acf-field input[type="number"], #post-load-tab .acf-field input[type="search"], #post-load-tab .acf-field input[type="email"], #post-load-tab .acf-field input[type="url"], #post-load-tab .acf-field textarea, #post-load-tab .acf-field select{
-        font-size   :11px;
-        line-height :12px;
-    }
-    .rjs-quick-form label{
-        font-weight :normal;
-        font-size   :12px;
-    }
-    .errorinput{
-        color      :#850000;
-        background :rgba(254, 186, 186, 0.5);
-        border     :1px solid #850000;
-    }
-    .wfc-table-loader{
-        font-size :55px;
-    }
-    #truckForm, #bulkTruckForm{
-        padding:10px;
-    }
-    .wfc-row{
-        margin-bottom:5px;
-    }
-    .wfc-form-row{
-        margin-bottom:5px;
-    }
-    .wfc-table-row{
-        margin-bottom:5px;
-    }
+}
+.acf-fields > .acf-field.wfc-acf-message{
+    border-top :none;
+}
+.acf-fields > .acf-field.wfc-acf-message .acf-input-wrap{
+    overflow :visible;
+}
+.wfc-quick-field > li.acf-input input{
+    /*width :20px;*/
+}
+ul.wfc-quick-field{
+    width :135px !important;
+}
+.acf-field.wfc-quick-field .acf-label{
+    vertical-align :top;
+    margin         :0;
+}
+.wfc-quick-post-form .acf-form-submit{
+    float       :right;
+    padding-top :36px;
+}
+.wfc-quick-post-form .acf-field .acf-label label{
+    font-size :12px;
+    margin    :0;
+}
+.wfc-acf-first{
+    clear :left !important;
+}
+#post-load-tab .acf-fields > .acf-field{
+    padding :10px 12px
+}
+#post-load-tab .acf-label{
+    display :none;
+}
+#post-load-tab .acf-field input[type="text"], #post-load-tab .acf-field input[type="password"], #post-load-tab .acf-field input[type="number"], #post-load-tab .acf-field input[type="search"], #post-load-tab .acf-field input[type="email"], #post-load-tab .acf-field input[type="url"], #post-load-tab .acf-field textarea, #post-load-tab .acf-field select{
+    font-size   :11px;
+    line-height :12px;
+}
+.rjs-quick-form label{
+    font-weight :normal;
+    font-size   :12px;
+}
+.errorinput{
+    color      :#850000;
+    background :rgba(254, 186, 186, 0.5);
+    border     :1px solid #850000;
+}
+.wfc-table-loader{
+    font-size :55px;
+}
+#truckForm, #bulkTruckForm{
+    padding :10px;
+}
+.wfc-row{
+    margin-bottom :5px;
+}
+.wfc-form-row{
+    margin-bottom :5px;
+}
+.wfc-table-row{
+    margin-bottom :5px;
+}
 /* } */
 
 /** bootstrap loading animation **/
-.glyphicon-refresh-animate {
-    -animation: spin .7s infinite linear;
-    -ms-animation: spin .7s infinite linear;
-    -webkit-animation: spinw .7s infinite linear;
-    -moz-animation: spinm .7s infinite linear;
+.glyphicon-refresh-animate{
+    -animation        :spin .7s infinite linear;
+    -ms-animation     :spin .7s infinite linear;
+    -webkit-animation :spinw .7s infinite linear;
+    -moz-animation    :spinm .7s infinite linear;
+}
+@keyframes spin{
+    from{
+        transform :scale(1) rotate(0deg);
+    }
+    to{
+        transform :scale(1) rotate(360deg);
+    }
+}
+@-webkit-keyframes spinw{
+    from{
+        -webkit-transform :rotate(0deg);
+    }
+    to{
+        -webkit-transform :rotate(360deg);
+    }
+}
+@-moz-keyframes spinm{
+    from{
+        -moz-transform :rotate(0deg);
+    }
+    to{
+        -moz-transform :rotate(360deg);
+    }
+}
+@media (min-width :992px){
+
+    .modal-lg.wfc-modal-lg{
+        width      :70%;
+        margin-top :3%;
+    }
+}
+    /*
+    * ---- FORM OVERRIDES
+    * ---- .wfc-form-container parent class for all forms
+    */
+.wfc-form-container label{
+    font-size:12px;
 }
 
-@keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
-}
-
-@-webkit-keyframes spinw {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
-}
-
-@-moz-keyframes spinm {
-    from { -moz-transform: rotate(0deg);}
-    to { -moz-transform: rotate(360deg);}
+.wfc-form-container .form-control{
+    display: block;
+    width: 100%;
+    height: 30px;
+    padding: 2px 10px;
+    font-size: 12px;
+    line-height: 1.25;
 }

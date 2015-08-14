@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="rjsBulkForm.html">
     <h3>Bulk Creation</h3>
-    <div>
+    <div class="wfc-form-container">
         <div class="row">
             <form id="bulkTruckForm" name="bulk" ng-submit="addSingletruck(bulk.$valid)" novalidate>
                 <fieldset>

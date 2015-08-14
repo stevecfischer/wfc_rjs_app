@@ -85,7 +85,7 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
 
     // I get all of the trucks in the remote collection.
     function getTrucks() {
-        console.log($routeParams);
+        //console.log($routeParams);
         if ($routeParams.status == "archive") {
             $routeParams.statusquery = "<=";
         } else {

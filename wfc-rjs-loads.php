@@ -341,38 +341,27 @@ foreach ($us_states_array as $row) {
         register_post_type( 'wfc_trucks', $truck_args );
     }
 
-    function wp_api_encode_acf( $data, $post, $context ){
-        $customMeta   = (array)get_fields( $post['ID'] );
-        $data['meta'] = array_merge( $data['meta'], $customMeta );
-        return $data;
-    }
-
-    if( function_exists( 'get_fields' ) ){
-        add_filter( 'json_prepare_post', 'wp_api_encode_acf', 10, 3 );
-    }
     add_filter( 'json_query_vars', 'slug_allow_meta', 10, 1 );
     function slug_allow_meta( $valid_vars ){
         $valid_vars = array_merge( $valid_vars, array('meta_key', 'meta_value', 'meta_query') );
         return $valid_vars;
     }
 
-    add_filter( 'json_prepare_post', 'rjs_wp_api_encode_acf', 10, 3 );
-    function rjs_wp_api_encode_acf( $data, $post, $context ){
+    add_filter( 'json_prepare_post', 'rjs_wp_api_encode', 10, 3 );
+    function rjs_wp_api_encode( $data, $post, $context ){
         $customMeta      = (array)get_post_meta( $post['ID'] );
         $filterMeta      = rjs_get_fields( $customMeta );
         $data['rjsmeta'] = $filterMeta;
-        return $data;
+        /*
+         * only return what we need.
+         */
+        $filterArr = array('ID'=>$data['ID'], 'rjsmeta' => $data['rjsmeta']);
+        return $filterArr;
     }
 
-    //    function custom_json_api_prepare_post( $post_response, $post, $context ){
-    //        $meta                             = (array)get_post_meta( $post['ID'] );
-    //        $post_response['rjsmeta'] = $meta;
-    //        return $post_response;
-    //    }
     add_filter( 'json_query_var-meta_query', 'adjustQrry', 10, 1 );
     function adjustQrry( $data ){
         $args = array();
-        //        $args['relation'] = 'AND';
         foreach( $data as $key => $value ){
             if( 'relation' === $key ){
                 $args['relation'] = $data['relation'];
@@ -396,7 +385,6 @@ foreach ($us_states_array as $row) {
     add_action( 'wp_ajax_rjs_edit_post', 'rjs_edit_post' );
     add_action( 'wp_ajax_nopriv_rjs_edit_post', 'rjs_edit_post' );
     function rjs_edit_post(){
-        print_r( $_POST );
         foreach( $_POST['postdata'] as $field_k => $field_v ){
             if( substr( $field_k, 0, 3 ) == 'wfc' ){
                 update_post_meta( $_POST['postid'], $field_k, $field_v );
