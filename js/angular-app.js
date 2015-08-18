@@ -82,9 +82,9 @@ app.config(function ($routeProvider, $locationProvider, datepickerConfig, datepi
         .when('/favorite-posts/', {
             templateUrl: function ($routeParams) {
                 if ($routeParams.type == "rjs_loads") {
-                    return wfcLocalized.template_directory.favorite_loads_posts;
-                }else{
-                    return wfcLocalized.template_directory.favorite_trucks_posts;
+                    return wfcLocalized.template_directory.rjs_loads;
+                } else {
+                    return wfcLocalized.template_directory.rjs_trucks;
                 }
             },
             controller: 'FavoriteCtrl'

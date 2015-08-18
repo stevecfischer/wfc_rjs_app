@@ -243,3 +243,7 @@ section#other-criteria .row{
     padding:0;
 }
 .active { color: red; }
+
+@media (min-width: 992px){
+    .wfc-form-container .container{ width: 100%; }
+}

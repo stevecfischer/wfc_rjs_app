@@ -213,6 +213,7 @@
                 'rjs_loads'      => plugin_dir_url( __FILE__ ).'partials/post-rjs_loads.php',
                 'rjs_trucks'     => plugin_dir_url( __FILE__ ).'partials/post-rjs_trucks.php',
                 'favorite_truck_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-truck-posts.php',
+                'favorite_load_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-load-posts.php',
                 'rjs_pagination' => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
             );
             // Localize Variables
