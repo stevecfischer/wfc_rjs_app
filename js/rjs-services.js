@@ -12,6 +12,8 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     function createTrucks(bulkTrucksObj) {
         angular.forEach(bulkTrucksObj, function (value, key) {
             value.wfc_rjs_trucks_pickup_date = $filter('date')(value.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
+            value.wfc_rjs_loads_pickup_date = $filter('date')(value.wfc_rjs_loads_pickup_date, "yyyy-MM-dd");
+            value.wfc_rjs_loads_deliver_date = $filter('date')(value.wfc_rjs_loads_deliver_date, "yyyy-MM-dd");
         });
         var data = {
             action: 'rjs_bulk_new_post',
@@ -28,6 +30,8 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     }
 
     function createTruck(postObj) {
+        postObj.rjsmeta.wfc_rjs_loads_pickup_date = $filter('date')(postObj.rjsmeta.wfc_rjs_loads_pickup_date, "yyyy-MM-dd");
+        postObj.rjsmeta.wfc_rjs_loads_deliver_date = $filter('date')(postObj.rjsmeta.wfc_rjs_loads_deliver_date, "yyyy-MM-dd");
         postObj.rjsmeta.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.rjsmeta.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
         var data = {
             action: 'rjs_new_post',
@@ -44,7 +48,7 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     }
 
     function quickCreateTruck(postObj) {
-        postObj.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
+        postObj = wfcDateFilter(postObj);
         var data = {
             action: 'rjs_new_post',
             postdata: postObj,
@@ -61,6 +65,8 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
 
     function editTruck(postObj) {
         postObj.rjsmeta.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.rjsmeta.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
+        postObj.rjsmeta.wfc_rjs_loads_pickup_date = $filter('date')(postObj.rjsmeta.wfc_rjs_loads_pickup_date, "yyyy-MM-dd");
+        postObj.rjsmeta.wfc_rjs_loads_deliver_date = $filter('date')(postObj.rjsmeta.wfc_rjs_loads_deliver_date, "yyyy-MM-dd");
         var data = {
             action: 'rjs_edit_post',
             postid: postObj.ID,
@@ -85,7 +91,6 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
 
     // I get all of the trucks in the remote collection.
     function getTrucks() {
-        //console.log($routeParams);
         if ($routeParams.status == "archive") {
             $routeParams.statusquery = "<=";
         } else {
@@ -121,6 +126,16 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     // ---
     // I transform the error response, unwrapping the application dta from
     // the API response payload.
+
+    function wfcDateFilter(postObj){
+        if($routeParams.type == 'rjs_loads'){
+            postObj.wfc_rjs_loads_pickup_date = $filter('date')(postObj.wfc_rjs_loads_pickup_date, "yyyy-MM-dd");
+            postObj.wfc_rjs_loads_deliver_date = $filter('date')(postObj.wfc_rjs_loads_deliver_date, "yyyy-MM-dd");
+        }else{
+            postObj.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
+        }
+        return postObj;
+    }
     function handleError(response) {
         // The API response from the server should be returned in a
         // nomralized format. However, if the request was not handled by the

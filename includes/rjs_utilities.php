@@ -1,7 +1,7 @@
 <?php
-    $size_array               = array(
-        'full'    => "Full/TL",
-        'partial' => "Partial/LTL"
+    $rjs_trailer_size               = array(
+        'Full/TL'    => "Full/TL",
+        'Partial/LTL' => "Partial/LTL"
     );
     $us_states_array          = array(
         'AL' => 'AL',
@@ -70,10 +70,10 @@
         'Pallet Exchange',
     );
     $rjs_add_fav              = array(
-        'Yes'
+        'Yes' => 'Yes'
     );
     $rjs_daily                = array(
-        'Yes'
+        'Yes' => 'Yes'
     );
     $rjs_custom_fields_trucks = array(
         array(
@@ -140,7 +140,7 @@
         array(
             'field_title' => 'Size: ',
             'type_of_box' => 'select',
-            'options'     => $size_array, /* required */
+            'options'     => $rjs_trailer_size, /* required */
         ),
         array(
             'field_title' => 'Pickup Date: ',

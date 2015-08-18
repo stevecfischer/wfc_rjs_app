@@ -1,131 +1,183 @@
-<div class="row post-load-partial">
-    <span class="col-lg-1">
+<div class="row post-load-partial wfc-row">
+    <span class="col-md-1">
     </span>
-    <span class="col-lg-3">
-        <a ng-click="createPost()">New Post</a>
-        |
-        <a href="{{wfcLocalized.site}}archive-posts/?type=rjs_{{rjsposttype}}&status=archive">Historical Posts</a>
-        |
-        <a href="{{wfcLocalized.site}}fav-loads?type=rjs_loads&status=current&is_fav=yes">Favorite Postings</a>
+    <span class="col-md-10">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <ul class="nav navbar-nav">
+                        <li>
+                        <a ng-click="createPost()">New Post</a>
+                        </li>
+                        <li ng-class="{ active: activePath=='/archive-posts/?type=rjs_{{rjsposttype}}&status=archive' }">
+                        <a href="{{wfcLocalized.site}}archive-posts/?type=rjs_{{rjsposttype}}&status=archive">Historical {{rjsposttype | capitalize}}</a>
+                        </li>
+                        <li ng-class="{ active: activePath=='/favorite-posts/?type=rjs_{{rjsposttype}}' }">
+                        <a href="{{wfcLocalized.site}}favorite-posts/?type=rjs_{{rjsposttype}}">Favorite Postings</a>
+                        </li>
+                        <li ng-class="{ active: activePath=='/manage-posts/?type=rjs_loads&status=current' }">
+                        <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_loads&status=current">Manage Loads</a>
+                        </li>
+                        <li ng-class="{ active: activePath=='/manage-posts/?type=rjs_trucks&status=current' }">
+                        <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_trucks&status=current">Manage Trucks</a>
+                        </li>
+                        <li>
+                        <a ng-click="openBulkModal()">Create Bulk Posts</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     </span>
-    <span class="col-lg-4">
-        <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_loads&status=current">Manage Loads</a>
-        |
-        <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_trucks&status=current">Manage Trucks</a>
-    </span>
-    <span class="col-lg-4">
-        <a ng-click="openBulkModal()">Create Bulk Posts</a>
+    <span class="col-md-1">
     </span>
 </div>
-<div class="row">
-    <fieldset>
-        <div class="row">
-            <div class="col-md-2">
-                <label class="control-label" for="origin_city">Origin City</label>
-                <input id="origin_city" ng-model="wfc_rjs_loads_origin_city" name="wfc_rjs_loads_origin_city" type="text" class="form-control input-md">
-            </div>
-            <div class="col-md-2">
-                <label class="control-label" for="origin_state">Origin State</label>
-                <select id="origin_state" ng-model="wfc_rjs_loads_origin_state" name="wfc_rjs_loads_origin_state">
-                    <?php foreach( $us_states_array as $k => $v ): ?>
-                        <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="control-label" for="dest_city">Dest. City</label>
-                <input id="dest_city" ng-model="wfc_rjs_loads_dest_city" name="wfc_rjs_loads_dest_city" type="text" class="form-control input-md">
-            </div>
-            <div class="col-md-2">
-                <label class="control-label" for="selectbasic">Dest. State</label>
-                <select id="selectbasic" ng-model="wfc_rjs_loads_dest_state" name="wfc_rjs_loads_dest_state">
-                    <?php foreach( $us_states_array as $k => $v ): ?>
-                        <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="control-label">Trailer Options</label>
-                <label class="control-label">Hazmat
-                    <input type="checkbox" ng-model="wfc_rjs_loads_to_hazmat" ng-true-value="'Yes'" ng-false-value="'No'">
-                </label>
-                <label class="control-label">Team
-                    <input type="checkbox" ng-model="wfc_rjs_loads_to_team" ng-true-value="'Yes'" ng-false-value="'No'">
-                </label>
-                <label class="control-label">Expedited
-                    <input type="checkbox" ng-model="wfc_rjs_loads_to_expedited" ng-true-value="'Yes'" ng-false-value="'No'">
-                </label>
-                <label class="control-label">Tarp
-                    <input type="checkbox" ng-model="wfc_rjs_loads_to_tarp" ng-true-value="'Yes'" ng-false-value="'No'">
-                </label>
-                <label class="control-label">Pallet Exchange
-                    <input type="checkbox" ng-model="wfc_rjs_loads_to_pallet_exchange" ng-true-value="'Yes'" ng-false-value="'No'">
-                </label>
-            </div>
-            <div class="col-md-2">
-                <label class="control-label" for="wfc_rjs_loads_trailer_type">Trailer Type</label>
-                <select id="wfc_rjs_loads_trailer_type" ng-model="wfc_rjs_loads_trailer_type">
-                    <?php foreach( $rjs_trailer_type as $k => $v ): ?>
-                        <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
-        <button type="button" ng-click="quickLoadPost()">Add Load</button>
-    </fieldset>
-</div>
-<div class="row">
-    <span class="col-lg-1">
+<div class="row wfc-form-row">
+    <span class="col-md-1">
     </span>
-    <span class="col-lg-10">
-        <table st-table="displayedCollection" st-safe-src="loads" class="table table-striped table-bordered">
+    <form name="quickNewTruck" ng-submit="quickTruckPost(quickNewTruck.$valid)" novalidate class="col-md-10">
+        <fieldset>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label" for="wfc_rjs_loads_origin_city">Origin</label>
+                    <input id="wfc_rjs_loads_origin_city"
+                           ng-model="quicktruck.wfc_rjs_loads_origin_city"
+                           name="wfc_rjs_loads_origin_city"
+                           type="text"
+                           class="form-control input-md"
+                        />
+                </div>
+                <div class="col-md-1">
+                    <label class="control-label" for="wfc_rjs_loads_origin_state">St</label>
+                    <br/> <select id="wfc_rjs_loads_origin_state"
+                                  name="wfc_rjs_loads_origin_state"
+                                  ng-init="quicktruck.wfc_rjs_loads_origin_state = usStates[0].value"
+                                  ng-model="quicktruck.wfc_rjs_loads_origin_state"
+                                  ng-options="option.value as option.name for option in usStates">
+                        <option value="no">default</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <label class="control-label" for="wfc_rjs_loads_trailer_type">Eq</label>
+                    <br/> <select id="wfc_rjs_loads_trailer_type"
+                                  name="wfc_rjs_loads_trailer_type"
+                                  ng-init="quicktruck.wfc_rjs_loads_trailer_type = trailerTypes[0].value"
+                                  ng-model="quicktruck.wfc_rjs_loads_trailer_type"
+                                  ng-options="option.value as option.name for option in trailerTypes"></select>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label" for="wfc_rjs_loads_dest_city">Dest.</label>
+                    <input id="wfc_rjs_loads_dest_city"
+                           ng-model="quicktruck.wfc_rjs_loads_dest_city"
+                           name="wfc_rjs_loads_dest_city"
+                           type="text"
+                           class="form-control input-md">
+                </div>
+                <div class="col-md-1">
+                    <label class="control-label" for="wfc_rjs_loads_dest_state">St</label>
+                    <br/> <select id="wfc_rjs_loads_dest_state"
+                                  name="wfc_rjs_loads_dest_state"
+                                  ng-init="quicktruck.wfc_rjs_loads_dest_state = usStates[0].value"
+                                  ng-model="quicktruck.wfc_rjs_loads_dest_state"
+                                  ng-options="option.value as option.name for option in usStates"></select>
+                </div>
+                <div class="col-md-2">
+                    <br/>
+                    <label class="control-label">LTL <input type="checkbox"
+                                                            ng-model="quicktruck.wfc_rjs_loads_size"
+                                                            ng-true-value="'partial'"
+                                                            ng-false-value="'No'">
+                    </label>
+                </div>
+                <div class="col-md-3" ng-class="{'has-error': quickNewTruck.wfc_rjs_loads_pickup_date.$invalid && quickNewTruck.$submitted}">
+                    <label class="control-label" for="wfc_rjs_loads_pickup_date">Date</label>
+                    <br/> <input ng-model="quicktruck.wfc_rjs_loads_pickup_date"
+                                 type="text"
+                                 name="wfc_rjs_loads_pickup_date"
+                                 datepicker-popup="MM-dd-yyyy"
+                                 datepicker-append-to-body="true"
+                                 is-open="data.isOpen"
+                                 ng-click="data.isOpen = true"
+                                 ng-required="true"
+                                 class="form-control input-md"
+                        />
+                    <p ng-show="quickNewTruck.wfc_rjs_loads_pickup_date.$invalid && quickNewTruck.$submitted"
+                       class="help-block">Enter a Date.</p>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-md">Add Load</button>
+        </fieldset>
+    </form>
+</div>
+<div class="row wfc-table-row">
+    <span class="col-md-1">
+    </span>
+    <span class="col-md-10">
+        <span class="wfc-table-loader col-md-offset-6 col-md-1 glyphicon glyphicon-refresh glyphicon-refresh-animate"
+              ng-show="loading"></span>
+        <table st-table="trucks"
+               st-safe-src="rowCollection"
+               class="table table-striped table-bordered"
+               ng-show="!loading">
             <thead>
             <tr>
-                <th>Equipment</th>
+                <td colspan="13" class="text-center">
+                    <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+                </td>
+            </tr>
+            <tr>
+                <th><input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/></th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_trailer_type">Equipment</th>
                 <th>Options</th>
                 <th>Full/Partial</th>
-                <th>Pickup Date</th>
-                <th>Delivery Date</th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_pickup_date">Pickup Date</th>
                 <th>Payment</th>
-                <th st-sort="meta.origin_city">Origin City</th>
-                <th st-sort="meta.origin_state">ST</th>
-                <th>Destination City</th>
-                <th>ST</th>
-                <th>Handle</th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_origin_city">Origin City</th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_origin_state">ST</th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_dest_city">Destination City</th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_dest_state">ST</th>
+                <th st-sort="rjsmeta.wfc_rjs_loads_handle">Handle</th>
                 <th>Handle Phone</th>
                 <th>Tools</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="load in displayedCollection">
-                <td>{{load.rjsmeta.wfc_rjs_loads_trailer_type}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_trailer_options.join(", ")}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_partial}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_pickup_date | scfDateFormatter}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_deliver_date | scfDateFormatter}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_amount}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_origin_city}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_origin_state}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_dest_city}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_dest_state}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_handle}}</td>
-                <td>{{load.rjsmeta.wfc_rjs_loads_handle_phone}}</td>
-                <td>
-                    <a data-toggle="modal" data-target="#newPost"><i class="glyphicon glyphicon-pencil"></i></a>
+            <tr ng-repeat="truck in trucks">
+                <td width="20"><input type="checkbox" ng-model="bulkDeleteSelected[truck.ID]"/></td>
+                <td width="20">{{truck.rjsmeta.wfc_rjs_loads_trailer_type}}</td>
+                <td>{{truck.rjsmeta.trailerOptions.join(', ')}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_size}}</td>
+                <td width="200">{{truck.rjsmeta.wfc_rjs_loads_pickup_date | date:"M/dd/yy"}}</td>
+                <td width="20">{{truck.rjsmeta.wfc_rjs_loads_rate_per_mile}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_origin_city}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_origin_state}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_dest_city}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_dest_state}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_handle}}</td>
+                <td>{{truck.rjsmeta.wfc_rjs_loads_handle_phone}}</td>
+                <td width="50">
+                    <a ng-click="editPost( truck )"><i class="glyphicon glyphicon-pencil"></i></a>
                     |
-                    <a ng-click="removeLoad( load )"><i class="glyphicon glyphicon-remove"></i></a>
+                    <a ng-click="deletePost( truck.ID )"><i class="glyphicon glyphicon-remove"></i></a>
                 </td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="13" class="text-center">
-                    <div st-items-by-page="5" st-pagination="" st-template="/cms-wfc/wp-content/plugins/wfc_rjs_app/partials/rjs.pagination.html"></div>
+                    <div st-items-by-page="10" st-displayed-pages="7" st-pagination=""></div>
+                    <div><!-- Total number of Trucks: {{rowCollection.length}} --></div>
                 </td>
             </tr>
             </tfoot>
         </table>
+        <span class="col-md-2">
+            <button ng-click="bulkDeleteTrucks()"
+                    ng-disabled="!selectedAll"
+                    class="btn btn-success btn-md">Bulk Delete
+            </button>
+        </span>
     </span>
-    <span class="col-lg-1">
+    <span class="col-md-1">
     </span>
 </div>

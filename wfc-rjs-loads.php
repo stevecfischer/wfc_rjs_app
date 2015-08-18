@@ -22,8 +22,6 @@
     require_once('includes/rjs_routes.php');
     require_once('includes/rjs_utilities.php');
     require_once('includes/rjs_post_type_manager.php');
-
-
     /*
     ===============================
     REGISTER CUSTOM POST TYPE WITH CUSTOM META BOX OPTIONS
@@ -67,7 +65,7 @@
                 array(
                     'field_title' => 'Size: ',
                     'type_of_box' => 'select',
-                    'options'     => $size_array, /* required */
+                    'options'     => $rjs_trailer_size, /* required */
                 ),
                 array(
                     'field_title' => 'Pickup Date: ',
@@ -156,11 +154,12 @@
             global $wpdb;
             add_action( 'wp_enqueue_scripts', array($this, 'angularScripts') );
             add_filter( 'json_insert_post', array($this, 'post_add_tax'), 10, 3 );
-            add_filter( 'template_include', array($this, 'template_override') );
         }
 
         function angularScripts(){
             global $us_states_array;
+            global $rjs_trailer_type;
+            global $rjs_trailer_size;
             wp_enqueue_style( 'bootstrap', plugin_dir_url( __FILE__ ).'css/bootstrap.min.css' );
             wp_enqueue_style( 'rjs-styles', plugin_dir_url( __FILE__ ).'css/styles.css' );
             // Angular Core
@@ -210,23 +209,25 @@
                 'bootstrap-angularjs', plugin_dir_url( __FILE__ ).
                 'js/ui-bootstrap-angular.min.js', array('bootstrap-main'), NULL, false );
             // Template Directory
-            $template_directory = array(
+            $partials_directory = array(
                 'rjs_loads'      => plugin_dir_url( __FILE__ ).'partials/post-rjs_loads.php',
                 'rjs_trucks'     => plugin_dir_url( __FILE__ ).'partials/post-rjs_trucks.php',
-                'post_archive'   => plugin_dir_url( __FILE__ ).'partials/archive-load.html',
-                'favorite_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-posts.php',
-                'archive_truck'  => plugin_dir_url( __FILE__ ).'partials/archive-truck.html',
+                'favorite_truck_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-truck-posts.php',
                 'rjs_pagination' => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
-                'item_edit'      => plugin_dir_url( __FILE__ ).'partials/itemEdit.html'
             );
             // Localize Variables
-
-            $indexedOnly = array();
-
-foreach ($us_states_array as $row) {
-    $indexedOnly[] = array('name' => $row, 'value' => $row);
-}
-
+            $json_us_states = array();
+            foreach( $us_states_array as $row ){
+                $json_us_states[] = array('name' => $row, 'value' => $row);
+            }
+            $json_trailer_type = array();
+            foreach( $rjs_trailer_type as $row ){
+                $json_trailer_type[] = array('name' => $row, 'value' => $row);
+            }
+            $json_trailer_size = array();
+            foreach( $rjs_trailer_size as $row_k => $row_v ){
+                $json_trailer_size[] = array('name' => $row_v, 'value' => $row_k);
+            }
             wp_localize_script(
                 'angular-core',
                 'wfcLocalized',
@@ -235,10 +236,12 @@ foreach ($us_states_array as $row) {
                     'base'               => json_url(),
                     'ajax_url'           => admin_url( 'admin-ajax.php' ),
                     'nonce'              => wp_create_nonce( 'wp_json' ),
-                    'template_directory' => $template_directory,
+                    'template_directory' => $partials_directory,
                     'today_date'         => date( "Y-m-d", strtotime( "today midnight" ) ),
                     'plugin_path'        => plugin_dir_url( __FILE__ ),
-                    'us_states' => json_encode($indexedOnly),
+                    'us_states'          => json_encode( $json_us_states ),
+                    'trailer_type'       => json_encode( $json_trailer_type ),
+                    'trailer_size'       => json_encode( $json_trailer_size ),
                 )
             );
         }
@@ -248,99 +251,9 @@ foreach ($us_states_array as $row) {
                 wp_set_post_terms( $post['ID'], array(intval( $term )), $tax, true );
             }
         }
-
-        function template_override( $template ){
-            /*
-             * Optional: Have a plug-in option to disable template handling
-             * if( get_option('wpse72544_disable_template_handling') )
-             *     return $template;
-             */
-            if( is_singular( 'post' ) && 'single.php' != $template ){
-                //WordPress couldn't find an 'event' template. Use plug-in instead:
-                $template = WPRJS_PLUGIN_TEMPLATES_DIR.'/single.php';
-            }
-            return $template;
-        }
     }
 
     new wprjs();
-    // Register Custom Post Type
-    add_action( 'init', 'wfc_register_post_type', 0 );
-    function wfc_register_post_type(){
-        $labels_loads = array(
-            'name'               => _x( 'Load', 'Post Type General Name', 'text_domain' ),
-            'singular_name'      => _x( 'Loads', 'Post Type Singular Name', 'text_domain' ),
-            'menu_name'          => __( 'Post Load', 'text_domain' ),
-            'name_admin_bar'     => __( 'Post Load', 'text_domain' ),
-            'parent_item_colon'  => __( 'Parent Item:', 'text_domain' ),
-            'all_items'          => __( 'All Items', 'text_domain' ),
-            'add_new_item'       => __( 'Add New Item', 'text_domain' ),
-            'add_new'            => __( 'Add New', 'text_domain' ),
-            'new_item'           => __( 'New Item', 'text_domain' ),
-            'edit_item'          => __( 'Edit Item', 'text_domain' ),
-            'update_item'        => __( 'Update Item', 'text_domain' ),
-            'view_item'          => __( 'View Item', 'text_domain' ),
-            'search_items'       => __( 'Search Item', 'text_domain' ),
-            'not_found'          => __( 'Not found', 'text_domain' ),
-            'not_found_in_trash' => __( 'Not found in Trash', 'text_domain' ),
-        );
-        $load_args    = array(
-            'label'               => __( 'wfc_loads', 'text_domain' ),
-            'description'         => __( 'RJS Loads', 'text_domain' ),
-            'labels'              => $labels_loads,
-            'supports'            => array('title', 'custom-fields'),
-            'hierarchical'        => false,
-            'public'              => true,
-            'show_ui'             => true,
-            'show_in_menu'        => true,
-            'menu_position'       => 5,
-            'show_in_admin_bar'   => false,
-            'show_in_nav_menus'   => true,
-            'can_export'          => true,
-            'has_archive'         => true,
-            'exclude_from_search' => false,
-            'publicly_queryable'  => true,
-            'capability_type'     => 'page',
-        );
-        register_post_type( 'wfc_loads', $load_args );
-        $labels_trucks = array(
-            'name'               => _x( 'Truck', 'Post Type General Name', 'text_domain' ),
-            'singular_name'      => _x( 'Trucks', 'Post Type Singular Name', 'text_domain' ),
-            'menu_name'          => __( 'Post Truck', 'text_domain' ),
-            'name_admin_bar'     => __( 'Post Truck', 'text_domain' ),
-            'parent_item_colon'  => __( 'Parent Item:', 'text_domain' ),
-            'all_items'          => __( 'All Items', 'text_domain' ),
-            'add_new_item'       => __( 'Add New Item', 'text_domain' ),
-            'add_new'            => __( 'Add New', 'text_domain' ),
-            'new_item'           => __( 'New Item', 'text_domain' ),
-            'edit_item'          => __( 'Edit Item', 'text_domain' ),
-            'update_item'        => __( 'Update Item', 'text_domain' ),
-            'view_item'          => __( 'View Item', 'text_domain' ),
-            'search_items'       => __( 'Search Item', 'text_domain' ),
-            'not_found'          => __( 'Not found', 'text_domain' ),
-            'not_found_in_trash' => __( 'Not found in Trash', 'text_domain' ),
-        );
-        $truck_args    = array(
-            'label'               => __( 'wfc_trucks', 'text_domain' ),
-            'description'         => __( 'RJS Trucks', 'text_domain' ),
-            'labels'              => $labels_trucks,
-            'supports'            => array('title', 'custom-fields'),
-            'hierarchical'        => false,
-            'public'              => true,
-            'show_ui'             => true,
-            'show_in_menu'        => true,
-            'menu_position'       => 5,
-            'show_in_admin_bar'   => false,
-            'show_in_nav_menus'   => true,
-            'can_export'          => true,
-            'has_archive'         => true,
-            'exclude_from_search' => false,
-            'publicly_queryable'  => true,
-            'capability_type'     => 'page',
-        );
-        register_post_type( 'wfc_trucks', $truck_args );
-    }
-
     add_filter( 'json_query_vars', 'slug_allow_meta', 10, 1 );
     function slug_allow_meta( $valid_vars ){
         $valid_vars = array_merge( $valid_vars, array('meta_key', 'meta_value', 'meta_query') );
@@ -355,7 +268,7 @@ foreach ($us_states_array as $row) {
         /*
          * only return what we need.
          */
-        $filterArr = array('ID'=>$data['ID'], 'rjsmeta' => $data['rjsmeta']);
+        $filterArr = array('ID' => $data['ID'], 'rjsmeta' => $data['rjsmeta']);
         return $filterArr;
     }
 

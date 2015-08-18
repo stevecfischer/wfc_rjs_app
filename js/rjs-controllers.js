@@ -1,24 +1,19 @@
+/**
+ * Controller for Trucks
+ */
 app.controller('TruckController', function ($scope, $routeParams, $location, truckService, $modal, $log, $filter, $timeout) {
+    $scope.activePath = null;
+    $scope.$on('$routeChangeSuccess', function () {
+        $scope.activePath = $location.url();
+        console.log($location.url());
+    });
     $scope.loading = true;
     $scope.deletedTrucks = [];
     $scope.quicktruck = {};
     $scope.bulkDeleteSelection = [];
     $scope.usStates = angular.fromJson(wfcLocalized.us_states);
-    //$scope.quicktruck = {
-    //    wfc_rjs_trucks_pickup_date: new Date()
-    //};
-    $scope.todayDate = new Date();
-    $scope.open = function () {
-        $scope.status.opened = true;
-    };
-    $scope.dateOptions = {
-        formatYear: 'yy',
-        startingDay: 1
-    };
-    $scope.format = 'MM-dd-yyyy';
-    $scope.status = {
-        opened: false
-    };
+    $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
+    $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
     if ($routeParams.type == "rjs_loads") {
         $scope.rjsposttype = "loads";
     } else {
@@ -29,25 +24,41 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     $scope.rowCollection = [];
     $scope.truck = {};
     loadRemoteData();
+    $scope.bulkDeleteSelected = {};
+    $scope.checkAll = function () {
+        if ($scope.selectedAll) {
+            for (var i = 0; i < $scope.trucks.length; i++) {
+                var item = $scope.trucks[i];
+                $scope.bulkDeleteSelected[item.ID] = true;
+            }
+        } else {
+            for (var i = 0; i < $scope.trucks.length; i++) {
+                var item = $scope.trucks[i];
+                $scope.bulkDeleteSelected[item.ID] = false;
+            }
+            console.log('false');
+        }
+    }
     $scope.createPost = function () {
+        if ($scope.rjsposttype == "loads") {
+            var dynamicTemplate = 'rjsLoadForm.html';
+        } else {
+            var dynamicTemplate = 'rjsTruckForm.html';
+        }
         var modalInstance = $modal.open({
-            templateUrl: 'rjsTruckForm.html',
+            templateUrl: dynamicTemplate,
             backdrop: 'static',
             size: 'lg wfc-modal-lg',
             windowClass: 'modal',
             controller: function ($scope, $modalInstance, $log, $http, loading) {
                 $scope.usStates = angular.fromJson(wfcLocalized.us_states);
-                //$scope.truck = {
-                //    rjsmeta: {
-                //        wfc_rjs_trucks_pickup_date: new Date(Date.now())
-                //    }
-                //};
+                $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
+                $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
                 $scope.submitEditTruck = function (isValid) {
                     if (isValid) {
                         $scope.loading = true;
                         //console.log($scope.truck);
                         truckService.createTruck($scope.truck)
-                        a
                             .then(loadRemoteData);
                         $modalInstance.dismiss($scope.loading);
                     }
@@ -73,21 +84,23 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
             $scope.loading = true;
             truckService.quickCreateTruck($scope.quicktruck)
                 .then(loadRemoteData);
-            $scope.resetForm($scope.quicktruck);
         }
     };
-    $scope.resetForm = function(postModal){
-        console.log(postModal);
-        postModal = '';
-        //console.log($scope.quickNewTruck);
-    }
     $scope.editPost = function (postObj) {
+        if ($scope.rjsposttype == "loads") {
+            var dynamicTemplate = 'rjsLoadForm.html';
+        } else {
+            var dynamicTemplate = 'rjsTruckForm.html';
+        }
         var modalInstance = $modal.open({
-                    templateUrl: 'rjsTruckForm.html',
+                    templateUrl: dynamicTemplate,
                     backdrop: 'static',
                     size: 'lg wfc-modal-lg',
                     windowClass: 'modal',
                     controller: function ($scope, $modalInstance, $log, $http, $filter, loading) {
+                        $scope.usStates = angular.fromJson(wfcLocalized.us_states);
+                        $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
+                        $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
                         $scope.loading = true;
                         $scope.truck = postObj;
                         $scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date = new Date($scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date);
@@ -125,8 +138,13 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     ////
     ///////
     $scope.openBulkModal = function () {
+        if ($scope.rjsposttype == "loads") {
+            var dynamicTemplate = 'rjsBulkLoadForm.html';
+        } else {
+            var dynamicTemplate = 'rjsBulkForm.html';
+        }
         var modalInstance = $modal.open({
-            templateUrl: 'rjsBulkForm.html',
+            templateUrl: dynamicTemplate,
             backdrop: 'static',
             windowClass: 'modal',
             size: 'lg wfc-modal-lg',
@@ -136,6 +154,9 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                 }
             },
             controller: function ($scope, $modalInstance, $log, $http, $filter, loading) {
+                $scope.usStates = angular.fromJson(wfcLocalized.us_states);
+                $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
+                $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
                 $scope.loading = true;
                 $scope.bulkTrucks = [];
                 //$scope.bulksingletruckformdata = {
@@ -167,21 +188,14 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
             $scope.loading = n;
         });
     };
-    $scope.toggleBulkDelete = function toggleSelection(truckPostId) {
-        var idx = $scope.bulkDeleteSelection.indexOf(truckPostId);
-        if (idx > -1) {
-            $scope.bulkDeleteSelection.splice(idx, 1);
-        } else {
-            $scope.bulkDeleteSelection.push(truckPostId);
-        }
-    };
     $scope.bulkDeleteTrucks = function () {
-        // @sftodo: try to pass all id's at once instead of
-        // @sftodo: looping it.  Send an array of id's.
         $scope.loading = true;
-        angular.forEach($scope.bulkDeleteSelection, function (value, key) {
-            $scope.deletePost(value);
+        angular.forEach($scope.bulkDeleteSelected, function (value, key) {
+            if (value) {
+                $scope.deletePost(key);
+            }
         });
+        $scope.selectedAll = false;
     };
     // ---
     // PRIVATE METHODS.
@@ -208,6 +222,21 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
             if (value.rjsmeta.wfc_rjs_trucks_to_pallet_exchange == "Yes") {
                 result.push("Pallet Exchange");
             }
+            if (value.rjsmeta.wfc_rjs_loads_to_hazmat == "Yes") {
+                result.push("Hazmat");
+            }
+            if (value.rjsmeta.wfc_rjs_loads_to_team == "Yes") {
+                result.push("Team");
+            }
+            if (value.rjsmeta.wfc_rjs_loads_to_expedited == "Yes") {
+                result.push("Expedited");
+            }
+            if (value.rjsmeta.wfc_rjs_loads_to_tarp == "Yes") {
+                result.push("Tarp");
+            }
+            if (value.rjsmeta.wfc_rjs_loads_to_pallet_exchange == "Yes") {
+                result.push("Pallet Exchange");
+            }
             value.rjsmeta.trailerOptions = result;
         });
         //$scope.trucks = p;
@@ -228,6 +257,9 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         );
     }
 });
+/**
+ * Controller for Favorite posts (loads or trucks)
+ */
 app.controller('FavoriteCtrl', function ($scope, $log, $http, $filter, truckService, $timeout, $modal, $routeParams) {
     if ($routeParams.type == "rjs_loads") {
         $scope.rjsposttype = "loads";
@@ -292,3 +324,10 @@ app.controller('FavoriteCtrl', function ($scope, $log, $http, $filter, truckServ
 //        $scope.trucks = [].concat($scope.rowCollection);
     }
 });
+app.filter('capitalize', function () {
+        return function (input, all) {
+            return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }) : '';
+        }
+    });

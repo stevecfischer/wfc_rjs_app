@@ -53,7 +53,11 @@ var app = angular.module("Rjs", ['ngRoute', 'ui.bootstrap', 'smart-table', 'ngRe
 // -------------------------------------------------- //
 // setup routes
 // -------------------------------------------------- //
-app.config(function ($routeProvider, $locationProvider) {
+app.config(function ($routeProvider, $locationProvider, datepickerConfig, datepickerPopupConfig) {
+    datepickerConfig.showWeeks = false;
+    datepickerPopupConfig.toggleWeeksText = null;
+    datepickerPopupConfig.showButtonBar = false;
+
     $routeProvider
         .when('/manage-posts/', {
             templateUrl: function ($routeParams) {
@@ -77,126 +81,18 @@ app.config(function ($routeProvider, $locationProvider) {
         })
         .when('/favorite-posts/', {
             templateUrl: function ($routeParams) {
-                return wfcLocalized.template_directory.favorite_posts;
+                if ($routeParams.type == "rjs_loads") {
+                    return wfcLocalized.template_directory.favorite_loads_posts;
+                }else{
+                    return wfcLocalized.template_directory.favorite_trucks_posts;
+                }
             },
             controller: 'FavoriteCtrl'
         });
     $locationProvider.html5Mode(true);
 });
-// -------------------------------------------------- //
-//  setup controllers
-// -------------------------------------------------- //
-app.controller('PostList', function ($scope, $routeParams, $location, postsFactory, postFactory, $modal, $log) {
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
-    /* callback for ng-click 'deletePost': */
-    $scope.deletePost = function (ID) {
-    }
-    /* callback for ng-click 'editTruck': */
-    $scope.editTruck = function (ID) {
-        var editTruckID = ID;
-        var truck = postFactory.get({id: ID}, function () {
-            //console.log($scope.truck);
-        });
-        $scope.truck = truck;
-        $modal.open({
-            templateUrl: 'rjsTruckForm.html',
-            backdrop: true,
-            windowClass: 'modal',
-            controller: function ($scope, $modalInstance, $log, truck, $http) {
-                $scope.truck = truck;
-                $scope.submitEditTruck = function () {
-                    var data = {
-                        action: 'rjs_edit_post',
-                        postid: editTruckID,
-                        postdata: $scope.truck.rjsmeta
-                    };
-                    $http({
-                        method: 'POST',
-                        url: wfcLocalized.ajax_url + "?_wp_json_nonce=" + wfcLocalized.nonce,
-                        data: data,
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                    });
-                    $log.log('Submitting user info.');
-                    $modalInstance.dismiss('cancel');
-                }
-                $scope.cancel = function () {
-                    $modalInstance.dismiss('cancel');
-                };
-            },
-            resolve: {
-                truck: function () {
-                    return $scope.truck;
-                }
-            }
-        });
-    };
-    $scope.newTruck = function () {
-        $modal.open({
-            templateUrl: 'rjsTruckForm.html',
-            backdrop: true,
-            windowClass: 'modal',
-            controller: function ($scope, $modalInstance, truck, $log, $http) {
-                $scope.truck = {};
-                $scope.submitEditTruck = function () {
-                    var data = {
-                        action: 'rjs_new_post',
-                        postdata: $scope.truck.rjsmeta,
-                        posttype: $routeParams.type
-                    };
-                    $http({
-                        method: 'POST',
-                        url: wfcLocalized.ajax_url + "?_wp_json_nonce=" + wfcLocalized.nonce,
-                        data: data,
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                    });
-                    $log.log('Creating a new truck');
-                    $modalInstance.dismiss('cancel');
-                }
-                $scope.cancel = function () {
-                    $modalInstance.dismiss('cancel');
-                };
-            },
-            resolve: {
-                truck: function () {
-                    return $scope.truck;
-                }
-            }
-        });
-    };
-    //////////////////////////////////////////////
-    //////////////////////////////////////////////
-    //////////////////////////////////////////////
-    //////////////////////////////////////////////
-    // ---------
-    //   get init collection
-    // ---------
-    $scope.init = function () {
-        if ($routeParams.status == "archive") {
-            $routeParams.status = "<=";
-        } else {
-            $routeParams.status = ">=";
-        }
-        var loadss = postsFactory.query({type: $routeParams.type, status: $routeParams.status}, function () {
-            //console.log(loadss);
-        });
-        $scope.loads = loadss;
-        $scope.displayedCollection = [].concat($scope.loads);
-        $scope.rjsposttype = $routeParams.type;
-    }
-    $scope.init();
-});
-// -------------------------------------------------- //
-// setup factories
-// -------------------------------------------------- //
-app.factory('postsFactory', function ($resource) {
-    //return $resource("/cms-wfc/wp-json/posts/?type=:type&filter[meta_query][key]=wfc_rjs_loads_pickup_date&filter[meta_query][value]=" + wfcLocalized.today_date + "&filter[meta_query][compare]=:status");
-    return $resource("/cms-wfc/wp-json/posts/?type=:type");
-});
-app.factory('postFactory', function ($resource) {
-    return $resource("/cms-wfc/wp-json/posts/:id?_wp_json_nonce=" + wfcLocalized.nonce);
-});
+
+
 // -------------------------------------------------- //
 // setup filters
 // -------------------------------------------------- //
@@ -212,6 +108,7 @@ app.filter('scfDateFormatter', function () {
 });
 app.filter('scfTrailerOptionsConcat', function () {
     return function (input) {
+        console.log(input);
         if (angular.isDefined(input)) {
             var result = [];
             if (input.wfc_rjs_trucks_to_hazmat == "Yes") {
@@ -229,7 +126,22 @@ app.filter('scfTrailerOptionsConcat', function () {
             if (input.wfc_rjs_trucks_to_pallet_exchange == "Yes") {
                 result.push("Pallet Exchange");
             }
-            input = result;
+            if (input.wfc_rjs_loads_to_hazmat == "Yes") {
+                result.push("Hazmat");
+            }
+            if (input.wfc_rjs_loads_to_team == "Yes") {
+                result.push("Team");
+            }
+            if (input.wfc_rjs_loads_to_expedited == "Yes") {
+                result.push("Expedited");
+            }
+            if (input.wfc_rjs_loads_to_tarp == "Yes") {
+                result.push("Tarp");
+            }
+            if (input.wfc_rjs_loads_to_pallet_exchange == "Yes") {
+                result.push("Pallet Exchange");
+            }
+            input = result.join(', ');
         }
         return input;
     }
@@ -263,55 +175,3 @@ app.directive('pageSelect', function () {
         }
     }
 });
-/*
- app.controller('ModalDemoCtrl', function ($scope, $modal, $log) {
- $scope.user = {
- user: 'name',
- password: 'null'
- };
- $scope.open = function () {
- $modal.open({
- templateUrl: 'myModalContent.html',
- backdrop: true,
- windowClass: 'modal',
- controller: function ($scope, $modalInstance, $log, user) {
- $scope.user = user;
- $scope.submit = function () {
- $log.log('Submiting user info.');
- $log.log(user);
- $modalInstance.dismiss('cancel');
- }
- $scope.cancel = function () {
- $modalInstance.dismiss('cancel');
- };
- },
- resolve: {
- user: function () {
- return $scope.user;
- }
- }
- });
- };
- });
- */
-//test
-//app.factory('bulktrucks', function () {
-//    var bulktrucks = {};
-//    bulktrucks.list = [];
-//    bulktrucks.add = function (singletruck) {
-//        bulktrucks.list.push({singletruck});
-//    };
-//    return bulktrucks;
-//});
-//app.controller('ListCtrl', function (bulktrucks) {
-//    var self = this;
-//    self.bulktrucks = bulktrucks.list;
-//});
-//app.controller('PostCtrl', function (bulktrucks) {
-//    var self = this;
-//
-//    self.addSingletruck = function (singletruck) {
-//        bulktrucks.add(singletruck);
-//        singletruck.wfc_rjs_loads_origin_state = "";
-//    };
-//});
