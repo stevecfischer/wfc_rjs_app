@@ -164,8 +164,9 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                 //};
                 $scope.addSingletruck = function (isValid) {
                     if (isValid) {
-                        $scope.bulkTrucks.push($scope.bulksingletruckformdata);
-                        $scope.bulksingletruckformdata = '';
+                        singleTruckObj = angular.copy($scope.bulksingletruckformdata);
+                        $scope.bulkTrucks.push(singleTruckObj);
+                        //$scope.bulksingletruckformdata = '';
                     }
                 };
                 $scope.removeSingletruck = function (index) {
@@ -423,8 +424,9 @@ app.controller('FavoriteCtrl', function ($scope, $routeParams, $location, truckS
                 //};
                 $scope.addSingletruck = function (isValid) {
                     if (isValid) {
-                        $scope.bulkTrucks.push($scope.bulksingletruckformdata);
-                        $scope.bulksingletruckformdata = '';
+                        singleTruckObj = angular.copy($scope.bulksingletruckformdata);
+                        $scope.bulkTrucks.push(singleTruckObj);
+                        //$scope.bulksingletruckformdata = '';
                     }
                 };
                 $scope.removeSingletruck = function (index) {
@@ -516,12 +518,11 @@ app.controller('FavoriteCtrl', function ($scope, $routeParams, $location, truckS
         );
     }
 });
-
 //
 app.filter('capitalize', function () {
-        return function (input, all) {
-            return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
-                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            }) : '';
-        }
-    });
+    return function (input, all) {
+        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }) : '';
+    }
+});
