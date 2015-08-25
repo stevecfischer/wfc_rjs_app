@@ -1,24 +1,6 @@
-/*
- app.directive('animateOnChange', ['$animate', '$timeout', function($animate, $timeout) {
- return function(scope, elem, attr) {
- scope.$watchCollection(attr.animateOnChange, function() {
- console.log('items changed');
- $animate.addClass(elem, 'on').then(function() {
- $timeout(function(){
- $animate.removeClass(elem, 'on');
- }, 0);
- });
- });
- };
- }]);*/
-//app.directive('div', function () {
-//    var directive = {};
-//    directive.restrict = 'E';
-//    /* restrict this directive to elements */
-//    directive.template = "My first directive: {{textToInsert}}";
-//    return directive;
-//});
-
+/**
+ * search form
+ */
 app.directive('searchForm', function () {
     return {
         restrict: 'EA',
