@@ -197,10 +197,10 @@
                 'angular-animate', plugin_dir_url( __FILE__ ).'js/angular-animate.min.js', array(
                 'angular-app'
             ), NULL, false );
-            /*wp_enqueue_script(
-                'rjs-dragndrop', plugin_dir_url( __FILE__ ).'js/lrDragNDrop.js', array(
+            wp_enqueue_script(
+                'rjs-ng-csv', plugin_dir_url( __FILE__ ).'js/ng-csv.min.js', array(
                 'angular-app'
-            ), NULL, false );*/
+            ), NULL, false );
             wp_enqueue_script(
                 'bootstrap-main', plugin_dir_url( __FILE__ ).'js/bootstrap.min.js', array('jquery'), NULL, false );
             wp_enqueue_script(
@@ -218,6 +218,7 @@
                 'rjs_search_form'           => plugin_dir_url( __FILE__ ).'partials/search-form.php',
                 'rjs_search_page'           => plugin_dir_url( __FILE__ ).'partials/post-search.php',
                 'rjs_nav_section'           => plugin_dir_url( __FILE__ ).'partials/nav-section.php',
+                'rjs_footer'           => plugin_dir_url( __FILE__ ).'partials/rjs-footer.php',
             );
             // Localize Variables
             $json_us_states = array();
@@ -272,12 +273,13 @@
         /*
          * only return what we need.
          */
-        $filterArr = array('ID' => $data['ID'], 'rjsmeta' => $data['rjsmeta']);
+        //$filterArr = array('ID' => $data['ID'], 'rjsmeta' => $data['rjsmeta']);
+        $filterArr = $data;
         return $filterArr;
     }
 
-    add_filter( 'json_query_var-meta_query', 'adjustQrry', 10, 1 );
-    function adjustQrry( $data ){
+    add_filter( 'json_query_var-meta_query', 'rjs_enable_multi_meta_query', 10, 1 );
+    function rjs_enable_multi_meta_query( $data ){
         $args = array();
         foreach( $data as $key => $value ){
             if( 'relation' === $key ){

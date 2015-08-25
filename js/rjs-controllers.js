@@ -29,7 +29,7 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
      * helper methods
      */
 
-    //active state for nav menu
+        //active state for nav menu
     $scope.$on('$routeChangeSuccess', function () {
         $scope.activePath = $location.url();
     });
@@ -74,14 +74,29 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
     /**
      * init method gets initial data
      */
-    console.log($location.url());
-    if($location.url() == '/favorite-posts/?type=rjs_' + $scope.rjsposttype){
+    if ($location.url() == '/favorite-posts/?type=rjs_' + $scope.rjsposttype) {
         loadFavRemoteData();
-
-    }else{
+    } else if($location.url() != '/search-posts/?type=rjs_' + $scope.rjsposttype){
         loadRemoteData();
-
+    } else{
+        $scope.loading = false;
     }
+
+    /**
+     * search all posts
+     */
+    $scope.searchPost = function (isValid) {
+        if (isValid) {
+            $scope.loading = true;
+            truckService.searchRequest(this.search)
+                .then(function (p) {
+                    $timeout(function () {
+                        $scope.loading = false;
+                        applyRemoteData(p);
+                    }, 1000);
+                });
+        }
+    };
 
     /**
      * create post form methods
@@ -227,34 +242,7 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         truckService.deleteTruck(ID)
             .then(loadRemoteData);
     };
-    ///////////////////////
-    //// SEARCH POSTINGS
-    ////
-    ///////
-    $scope.openSearchModal = function () {
-        var modalInstance = $modal.open({
-            templateUrl: 'rjsSearchForm.html',
-            backdrop: 'static',
-            windowClass: 'modal',
-            size: 'lg wfc-modal-lg',
-            resolve: {
-                loading: function () {
-                    return $scope.loading;
-                }
-            },
-            controller: function ($scope, $modalInstance, $window) {
 
-                $scope.usStates = angular.fromJson(wfcLocalized.us_states);
-                $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
-                $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
-                $scope.loading = true;
-
-                $scope.cancel = function () {
-                    $modalInstance.close();
-                };
-            }
-        });
-    };
     ///////////////////////
     //// BULK POSTINGS SECTION
     ////
@@ -407,7 +395,6 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         );
     }
 });
-
 
 /**
  * Controller for Search Form

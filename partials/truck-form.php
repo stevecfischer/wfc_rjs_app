@@ -68,9 +68,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- END DESTINATION SECTION -->
                     </div>
-                    <!-- END ROW -->
                     <div class="row trailer-type">
                         <div class="col-md-6">
                             <label class="control-label wfc-section-title"
@@ -87,27 +85,27 @@
                             <label class="control-label">Hazmat <input type="checkbox"
                                                                        ng-model="truck.rjsmeta.wfc_rjs_trucks_to_hazmat"
                                                                        ng-true-value="'Yes'"
-                                                                       ng-false-value="'No'">
+                                                                       >
                             </label>
                             <label class="control-label">Team <input type="checkbox"
                                                                      ng-model="truck.rjsmeta.wfc_rjs_trucks_to_team"
                                                                      ng-true-value="'Yes'"
-                                                                     ng-false-value="'No'">
+                                                                     >
                             </label>
                             <label class="control-label">Expedited <input type="checkbox"
                                                                           ng-model="truck.rjsmeta.wfc_rjs_trucks_to_expedited"
                                                                           ng-true-value="'Yes'"
-                                                                          ng-false-value="'No'">
+                                                                        >
                             </label>
                             <label class="control-label">Tarp <input type="checkbox"
                                                                      ng-model="truck.rjsmeta.wfc_rjs_trucks_to_tarp"
                                                                      ng-true-value="'Yes'"
-                                                                     ng-false-value="'No'">
+                                                                    >
                             </label>
                             <label class="control-label">Pallet Exchange <input type="checkbox"
                                                                                 ng-model="truck.rjsmeta.wfc_rjs_trucks_to_pallet_exchange"
                                                                                 ng-true-value="'Yes'"
-                                                                                ng-false-value="'No'">
+                                                                                >
                             </label>
                         </div>
                     </div>

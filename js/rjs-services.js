@@ -7,7 +7,8 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
         createTruck: createTruck,
         quickCreateTruck: quickCreateTruck,
         createTrucks: createTrucks,
-        getFavTrucks: getFavTrucks
+        getFavTrucks: getFavTrucks,
+        searchRequest: searchRequest
     });
     function createTrucks(bulkTrucksObj) {
         angular.forEach(bulkTrucksObj, function (value, key) {
@@ -107,17 +108,33 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     }
 
     function getFavTrucks() {
-        /*
-         http://rjs.wfcdemo.com/cms-wfc/wp-json/posts/?type=rjs_trucks&filter[meta_query][key]=wfc_rjs_trucks_add_to_favorite_posts&filter[meta_query][value]=Yes&filter[meta_query][compare]===
-         get favorite trucks query
-
-         */
         var request = $http({
             method: 'GET',
             url: "/cms-wfc/wp-json/posts/?type=" +
             $routeParams.type + "&filter[meta_query][key]=wfc_" +
             $routeParams.type + "_add_to_favorite_posts&filter[meta_query][value]=Yes&filter[meta_query][compare]==="
         });
+        return ( request.then(handleSuccess, handleError) );
+    }
+
+    function searchRequest(formData) {
+        var urlStr = "/cms-wfc/wp-json/posts/?type=" + $routeParams.type;
+        var i = 1;
+        angular.forEach(formData, function (value, key) {
+            angular.forEach(value, function (value, key) {
+                urlStr += "&filter[meta_query][key"+i+"]="+key;
+                urlStr += "&filter[meta_query][value"+i+"]="+value;
+                urlStr += "&filter[meta_query][compare"+i+"]===";
+                i += 1;
+            });
+        });
+
+        var request = $http({
+            method: 'GET',
+            templateUrl: wfcLocalized.template_directory.rjs_search_form,
+            url: urlStr
+        });
+
         return ( request.then(handleSuccess, handleError) );
     }
 

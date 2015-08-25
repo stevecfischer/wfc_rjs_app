@@ -1,12 +1,10 @@
 <div class="row post-truck-partial wfc-row">
-    <span class="col-md-offset-1 col-md-10">
+    <span class="col-md-12">
         <rjs-nav-section></rjs-nav-section>
     </span>
 </div>
 <div class="row wfc-form-row">
-    <span class="col-md-1">
-    </span>
-    <form name="quickNewTruck" ng-submit="quickTruckPost(quickNewTruck.$valid)" novalidate class="col-md-10">
+    <form name="quickNewTruck" ng-submit="quickTruckPost(quickNewTruck.$valid)" novalidate class="col-md-12">
         <fieldset>
             <div class="row">
                 <div class="col-md-2">
@@ -82,9 +80,7 @@
     </form>
 </div>
 <div class="row wfc-table-row">
-    <span class="col-md-1">
-    </span>
-    <span class="col-md-10">
+    <span class="col-md-12">
         <span class="wfc-table-loader col-md-offset-6 col-md-1 glyphicon glyphicon-refresh glyphicon-refresh-animate"
               ng-show="loading"></span>
         <table st-table="trucks"
@@ -92,11 +88,6 @@
                class="table table-striped table-bordered"
                ng-show="!loading">
             <thead>
-            <tr>
-                <td colspan="13" class="text-center">
-                    <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
-                </td>
-            </tr>
             <tr>
                 <th><input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/></th>
                 <!--<th>**DEBUG Origin City</th>
@@ -144,13 +135,6 @@
             </tr>
             </tfoot>
         </table>
-        <span class="col-md-2">
-            <button ng-click="bulkDeleteTrucks()"
-                    ng-disabled="disableBulk"
-                    class="btn btn-success btn-md">Bulk Delete
-            </button>
-        </span>
-    </span>
-    <span class="col-md-1">
     </span>
 </div>
+<rjs-footer></rjs-footer>

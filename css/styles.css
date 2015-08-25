@@ -213,7 +213,8 @@ input[type=checkbox], input[type=radio]{
 }
 .wfc-form-container button.btn.btn-success.btn-md.single-truck,
 button.btn.btn-success.btn-md,
-button.btn.btn-danger.btn-md{
+button.btn.btn-danger.btn-md,
+button.btn.btn-info.btn-md{
     float        :right;
     margin-right :15px;
     margin-top   :10px;

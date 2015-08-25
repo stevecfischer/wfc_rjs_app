@@ -1,5 +1,4 @@
-// Define the module for our AngularJS application.
-var app = angular.module("Rjs", ['ngRoute', 'ui.bootstrap', 'smart-table', 'ngResource'], function ($httpProvider) {
+var app = angular.module("Rjs", ['ngRoute', 'ui.bootstrap', 'smart-table', 'ngResource', 'ngSanitize', 'ngCsv'], function ($httpProvider) {
     // Use x-www-form-urlencoded Content-Type
     $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
     /**
@@ -78,7 +77,7 @@ app.config(function ($routeProvider, $locationProvider, datepickerConfig, datepi
             templateUrl: function ($routeParams) {
                 return wfcLocalized.template_directory.rjs_search_page;
             },
-            controller: 'SearchController'
+            controller: 'TruckController'
         })
         .when('/favorite-posts/', {
             templateUrl: function ($routeParams) {
