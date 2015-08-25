@@ -54,10 +54,15 @@ var app = angular.module("Rjs", ['ngRoute', 'ui.bootstrap', 'smart-table', 'ngRe
 // setup routes
 // -------------------------------------------------- //
 app.config(function ($routeProvider, $locationProvider, datepickerConfig, datepickerPopupConfig) {
+    /**
+     * global configs for bootstrap-ui datepicker
+     */
     datepickerConfig.showWeeks = false;
     datepickerPopupConfig.toggleWeeksText = null;
     datepickerPopupConfig.showButtonBar = false;
-
+    /**
+     * app routes
+     */
     $routeProvider
         .when('/manage-posts/', {
             templateUrl: function ($routeParams) {
@@ -69,15 +74,11 @@ app.config(function ($routeProvider, $locationProvider, datepickerConfig, datepi
             },
             controller: 'TruckController'
         })
-        .when('/archive-posts/', {
+        .when('/search-posts/', {
             templateUrl: function ($routeParams) {
-                if ($routeParams.type == "rjs_loads") {
-                    return wfcLocalized.template_directory.rjs_loads;
-                } else {
-                    return wfcLocalized.template_directory.rjs_trucks;
-                }
+                return wfcLocalized.template_directory.rjs_search_page;
             },
-            controller: 'TruckController'
+            controller: 'SearchController'
         })
         .when('/favorite-posts/', {
             templateUrl: function ($routeParams) {
@@ -87,12 +88,10 @@ app.config(function ($routeProvider, $locationProvider, datepickerConfig, datepi
                     return wfcLocalized.template_directory.rjs_trucks;
                 }
             },
-            controller: 'FavoriteCtrl'
+            controller: 'TruckController'
         });
     $locationProvider.html5Mode(true);
 });
-
-
 // -------------------------------------------------- //
 // setup filters
 // -------------------------------------------------- //
@@ -108,7 +107,6 @@ app.filter('scfDateFormatter', function () {
 });
 app.filter('scfTrailerOptionsConcat', function () {
     return function (input) {
-        console.log(input);
         if (angular.isDefined(input)) {
             var result = [];
             if (input.wfc_rjs_trucks_to_hazmat == "Yes") {
@@ -146,8 +144,6 @@ app.filter('scfTrailerOptionsConcat', function () {
         return input;
     }
 });
-// -------------------------------------------------- //
-// -------------------------------------------------- //
 app.filter('scfArrToStr', function () {
     return function (input) {
         if (angular.isDefined(input)) {
@@ -159,6 +155,13 @@ app.filter('scfArrToStr', function () {
             }
         }
         return input;
+    }
+});
+app.filter('capitalize', function () {
+    return function (input, all) {
+        return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }) : '';
     }
 });
 // -------------------------------------------------- //

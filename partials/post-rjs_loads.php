@@ -1,35 +1,6 @@
 <div class="row post-truck-partial wfc-row">
-    <span class="col-md-1">
-    </span>
-    <span class="col-md-10">
-        <nav class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <ul class="nav navbar-nav">
-                        <li>
-                        <a ng-click="createPost()">Add {{rjsposttype | capitalize}}</a>
-                        </li>
-                        <li ng-class="{ active: activePath=='/archive-posts/?type=rjs_{{rjsposttype}}&status=archive' }">
-                        <a href="{{wfcLocalized.site}}archive-posts/?type=rjs_{{rjsposttype}}&status=archive">Historical {{rjsposttype | capitalize}}</a>
-                        </li>
-                        <li ng-class="{ active: activePath=='/favorite-posts/?type=rjs_{{rjsposttype}}' }">
-                        <a href="{{wfcLocalized.site}}favorite-posts/?type=rjs_{{rjsposttype}}">Favorite {{rjsposttype | capitalize}}</a>
-                        </li>
-                        <li ng-class="{ active: activePath=='/manage-posts/?type=rjs_loads&status=current' }">
-                        <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_loads&status=current">Manage Loads</a>
-                        </li>
-                        <li ng-class="{ active: activePath=='/manage-posts/?type=rjs_trucks&status=current' }">
-                        <a href="{{wfcLocalized.site}}manage-posts/?type=rjs_trucks&status=current">Manage Trucks</a>
-                        </li>
-                        <li>
-                        <a ng-click="openBulkModal()">Bulk Create {{rjsposttype | capitalize}}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </span>
-    <span class="col-md-1">
+    <span class="col-md-offset-1 col-md-10">
+        <rjs-nav-section></rjs-nav-section>
     </span>
 </div>
 <div class="row wfc-form-row">
@@ -89,7 +60,8 @@
                                                             ng-false-value="'No'">
                     </label>
                 </div>
-                <div class="col-md-3" ng-class="{'has-error': quickNewTruck.wfc_rjs_loads_pickup_date.$invalid && quickNewTruck.$submitted}">
+                <div class="col-md-3"
+                     ng-class="{'has-error': quickNewTruck.wfc_rjs_loads_pickup_date.$invalid && quickNewTruck.$submitted}">
                     <label class="control-label" for="wfc_rjs_loads_pickup_date">Date</label>
                     <br/> <input ng-model="quicktruck.wfc_rjs_loads_pickup_date"
                                  type="text"
@@ -143,12 +115,15 @@
             </thead>
             <tbody>
             <tr ng-repeat="truck in trucks">
-                <td width="20"><input type="checkbox" ng-model="bulkDeleteSelected[truck.ID]"/></td>
+                <td width="20"><input type="checkbox"
+                        ng-checked="bulkDeleteSelected.indexOf(truck) > -1"
+                       ng-click="toggleBulk(truck)"
+                        /></td>
                 <td width="20">{{truck.rjsmeta.wfc_rjs_loads_trailer_type}}</td>
                 <td>{{truck.rjsmeta.trailerOptions.join(', ')}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_loads_size}}</td>
                 <td width="200">{{truck.rjsmeta.wfc_rjs_loads_pickup_date | date:"M/dd/yy"}}</td>
-                <td width="20">{{truck.rjsmeta.wfc_rjs_loads_rate_per_mile}}</td>
+                <td width="20">{{truck.rjsmeta.wfc_rjs_loads_amount}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_loads_origin_city}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_loads_origin_state}}</td>
                 <td>{{truck.rjsmeta.wfc_rjs_loads_dest_city}}</td>
@@ -173,6 +148,7 @@
         </table>
         <span class="col-md-2">
             <button ng-click="bulkDeleteTrucks()"
+                    ng-disabled="disableBulk"
                     class="btn btn-success btn-md">Bulk Delete
             </button>
         </span>

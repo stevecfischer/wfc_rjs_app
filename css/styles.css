@@ -156,6 +156,9 @@ ul.wfc-quick-field{
     font-size   :12px;
     line-height :1.25;
 }
+h3.wfc-form-title{
+    text-align:left;
+}
 /*===============================
 
 * STYLING ADDITIONS
@@ -240,10 +243,13 @@ section#other-criteria .row{
     margin-right :0;
 }
 .dropdown-menu{
-    padding:0;
+    padding :0;
 }
-.active { color: red; }
-
-@media (min-width: 992px){
-    .wfc-form-container .container{ width: 100%; }
+.active{
+    color :red;
+}
+@media (min-width :992px){
+    .wfc-form-container .container{
+        width :100%;
+    }
 }

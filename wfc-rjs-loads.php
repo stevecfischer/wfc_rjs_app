@@ -210,11 +210,14 @@
                 'js/ui-bootstrap-angular.min.js', array('bootstrap-main'), NULL, false );
             // Template Directory
             $partials_directory = array(
-                'rjs_loads'      => plugin_dir_url( __FILE__ ).'partials/post-rjs_loads.php',
-                'rjs_trucks'     => plugin_dir_url( __FILE__ ).'partials/post-rjs_trucks.php',
+                'rjs_loads'            => plugin_dir_url( __FILE__ ).'partials/post-rjs_loads.php',
+                'rjs_trucks'           => plugin_dir_url( __FILE__ ).'partials/post-rjs_trucks.php',
                 'favorite_truck_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-truck-posts.php',
-                'favorite_load_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-load-posts.php',
-                'rjs_pagination' => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
+                'favorite_load_posts'  => plugin_dir_url( __FILE__ ).'partials/favorite-load-posts.php',
+                'rjs_pagination'       => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
+                'rjs_search_form'           => plugin_dir_url( __FILE__ ).'partials/search-form.php',
+                'rjs_search_page'           => plugin_dir_url( __FILE__ ).'partials/post-search.php',
+                'rjs_nav_section'           => plugin_dir_url( __FILE__ ).'partials/nav-section.php',
             );
             // Localize Variables
             $json_us_states = array();
@@ -296,6 +299,10 @@
         return $args;
     }
 
+    /**
+     * AJAX FUNCTIONS FOR CREATING AND EDITING.
+     * THE REST API DOESN'T SUPPORT MULTIPLE CUSTOM FIELDS EDITS
+     */
     add_action( 'wp_ajax_rjs_edit_post', 'rjs_edit_post' );
     add_action( 'wp_ajax_nopriv_rjs_edit_post', 'rjs_edit_post' );
     function rjs_edit_post(){
@@ -351,4 +358,28 @@
             }
         }
         die();
+    }
+
+    /**
+     * Adds a join to the WordPress meta table for license key searches in the WordPress Administration
+     *
+     * @param string $join SQL JOIN statement
+     *
+     * @return string SQL JOIN statement
+     */
+    add_filter( 'posts_join', 'search_meta_data_join');
+    function search_meta_data_join( $join ){
+        global $wp_query, $wpdb;
+//        print_r($wp_query);
+//        die('ddddd');
+
+        // Only join the post meta table if we are performing a search
+        if( empty (get_query_var( 's' )) ){
+            return $join;
+        }
+
+        // Join the post meta table
+        $join .= " LEFT JOIN $wpdb->postmeta ON $wpdb->posts.ID = $wpdb->postmeta.post_id ";
+
+        return $join;
     }

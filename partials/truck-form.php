@@ -1,8 +1,14 @@
 <script type="text/ng-template" id="rjsTruckForm.html">
     <div class="wfc-form-container">
-        <h3>Single Truck Posting</h3>
         <div class="container">
             <form id="truckForm" name="truckForm" ng-submit="submitEditTruck(truckForm.$valid)" novalidate>
+                <div class="row">
+                    <h3 class="col-md-8 wfc-form-title">Single Truck Posting</h3>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-danger btn-md" ng-click="cancel()">Cancel</button>
+                        <button type="submit" class="btn btn-success btn-md">Post and Close</button>
+                    </div>
+                </div>
                 <fieldset class="">
                     <div class="row">
                         <div class="col-md-6 origin-section">
@@ -130,7 +136,8 @@
                                        type="text"
                                        class="form-control input-md">
                             </div>
-                            <div class="col-md-4" ng-class="{'has-error': truckForm.wfc_rjs_trucks_pickup_date.$invalid && truckForm.$submitted}">
+                            <div class="col-md-4"
+                                 ng-class="{'has-error': truckForm.wfc_rjs_trucks_pickup_date.$invalid && truckForm.$submitted}">
                                 <label class="control-label wfc-section-title"
                                        for="wfc_rjs_trucks_pickup_date">Date Available
                                     <span class="required">*</span>

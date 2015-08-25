@@ -127,16 +127,18 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     // I transform the error response, unwrapping the application dta from
     // the API response payload.
 
-    function wfcDateFilter(postObj){
-        if($routeParams.type == 'rjs_loads'){
+    function wfcDateFilter(postObj) {
+        if ($routeParams.type == 'rjs_loads') {
             postObj.wfc_rjs_loads_pickup_date = $filter('date')(postObj.wfc_rjs_loads_pickup_date, "yyyy-MM-dd");
             postObj.wfc_rjs_loads_deliver_date = $filter('date')(postObj.wfc_rjs_loads_deliver_date, "yyyy-MM-dd");
-        }else{
+        } else {
             postObj.wfc_rjs_trucks_pickup_date = $filter('date')(postObj.wfc_rjs_trucks_pickup_date, "yyyy-MM-dd");
         }
         return postObj;
     }
+
     function handleError(response) {
+        //@sftodo: send errors to server and log in file
         // The API response from the server should be returned in a
         // nomralized format. However, if the request was not handled by the
         // server (or what not handles properly - ex. server error), then we
@@ -154,5 +156,19 @@ app.service('truckService', function ($http, $q, $routeParams, $filter) {
     // from the API response payload.
     function handleSuccess(response) {
         return ( response.data );
+    }
+});
+/**
+ * attempt at creating global methods, variables
+ * from controller: rjsUtility.test
+ */
+app.factory('rjsUtility', function () {
+    return ({
+        test: test
+    });
+
+    function test() {
+
+        console.log('here');
     }
 });

@@ -3,6 +3,14 @@
     <div class="wfc-form-container">
         <div class="container">
             <div class="row">
+                <div class="col-md-6">
+                    <!--DIV IS EMPTY ON PURPOSE-->
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger btn-md" ng-click="cancel()">Cancel</button>
+                </div>
+            </div>
+            <div class="row">
                 <form id="bulkTruckForm" name="bulk" ng-submit="addSingletruck(bulk.$valid)" novalidate>
                     <fieldset>
                         <div class="row">
@@ -31,13 +39,14 @@
                                        class="form-control input-md">
                             </div>
                             <div class="col-md-3">
-                                <label class="control-label wfc-section-title" for="wfc_rjs_trucks_dest_state">Dest. State</label>
+                                <label class="control-label wfc-section-title"
+                                       for="wfc_rjs_trucks_dest_state">Dest. State
+                                </label>
                                 <select id="wfc_rjs_trucks_dest_state"
                                         name="wfc_rjs_trucks_dest_state"
                                         ng-init="bulksingletruckformdata.wfc_rjs_trucks_dest_state = usStates[0].value"
                                         ng-model="bulksingletruckformdata.wfc_rjs_trucks_dest_state"
                                         ng-options="option.value as option.name for option in usStates"></select>
-
                             </div>
                         </div>
                         <div class="row">
@@ -74,22 +83,13 @@
                                        for="wfc_rjs_trucks_trailer_type">Trailer Type
                                 </label>
                                 <select id="wfc_rjs_trucks_trailer_type"
-                                  name="wfc_rjs_trucks_trailer_type"
-                                  ng-init="bulksingletruckformdata.wfc_rjs_trucks_trailer_type = trailerTypes[0].value"
-                                  ng-model="bulksingletruckformdata.wfc_rjs_trucks_trailer_type"
-                                  ng-options="option.value as option.name for option in trailerTypes"></select>
+                                        name="wfc_rjs_trucks_trailer_type"
+                                        ng-init="bulksingletruckformdata.wfc_rjs_trucks_trailer_type = trailerTypes[0].value"
+                                        ng-model="bulksingletruckformdata.wfc_rjs_trucks_trailer_type"
+                                        ng-options="option.value as option.name for option in trailerTypes"></select>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
-                                <label class="control-label wfc-section-title"
-                                       for="wfc_rjs_trucks_weight">Weight
-                                </label>
-                                <input id="wfc_rjs_trucks_weight"
-                                       ng-model="bulksingletruckformdata.wfc_rjs_trucks_weight"
-                                       type="text"
-                                       class="form-control input-md">
-                            </div>
                             <div class="col-md-4">
                                 <label class="control-label wfc-section-title"
                                        for="wfc_rjs_trucks_min_distance">Min Distance
@@ -99,7 +99,15 @@
                                        type="text"
                                        class="form-control input-md">
                             </div>
-                            <div class="col-md-4" ng-class="{'has-error': bulk.wfc_rjs_trucks_pickup_date.$invalid && bulk.$submitted}">
+                            <div class="col-md-4">
+                                <label class="control-label wfc-section-title">Partial <br/><input type="checkbox"
+                                                                                                   ng-model="bulksingletruckformdata.wfc_rjs_trucks_size"
+                                                                                                   ng-true-value="'Partial/LTL'"
+                                                                                                   ng-false-value="'No'">
+                                </label>
+                            </div>
+                            <div class="col-md-4"
+                                 ng-class="{'has-error': bulk.wfc_rjs_trucks_pickup_date.$invalid && bulk.$submitted}">
                                 <label class="control-label wfc-section-title"
                                        for="wfc_rjs_trucks_pickup_date">Date Available
                                     <span class="required">*</span>
@@ -116,6 +124,50 @@
                                     />
                                 <p ng-show="bulk.wfc_rjs_trucks_pickup_date.$invalid && bulk.$submitted"
                                    class="help-block">Enter a Date.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label wfc-section-title"
+                                       for="wfc_rjs_trucks_rate_per_mile">Rate Per Mile
+                                </label>
+                                <input id="wfc_rjs_trucks_rate_per_mile"
+                                       ng-model="bulksingletruckformdata.wfc_rjs_trucks_rate_per_mile"
+                                       name="wfc_rjs_trucks_rate_per_mile"
+                                       type="text"
+                                       class="form-control input-md">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label wfc-section-title"
+                                       for="wfc_rjs_trucks_qty">Qty.
+                                </label>
+                                <input id="wfc_rjs_trucks_qty"
+                                       ng-model="bulksingletruckformdata.wfc_rjs_trucks_qty"
+                                       name="wfc_rjs_trucks_qty"
+                                       type="text"
+                                       class="form-control input-md">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label wfc-section-title"
+                                       for="wfc_rjs_trucks_handle">Handle
+                                </label>
+                                <input id="wfc_rjs_trucks_handle"
+                                       ng-model="bulksingletruckformdata.wfc_rjs_trucks_handle"
+                                       name="wfc_rjs_trucks_handle"
+                                       type="text"
+                                       class="form-control input-md">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label wfc-section-title"
+                                       for="wfc_rjs_trucks_handle_phone">Handle Phone
+                                </label>
+                                <input id="wfc_rjs_trucks_handle_phone"
+                                       ng-model="bulksingletruckformdata.wfc_rjs_trucks_handle_phone"
+                                       name="wfc_rjs_trucks_handle_phone"
+                                       type="text"
+                                       class="form-control input-md">
                             </div>
                         </div>
                         <div class="row special-information">
@@ -148,10 +200,13 @@
                             <th>Dest. City</th>
                             <th>Dest. State</th>
                             <th>Trailer Type</th>
-                            <th>Weight</th>
                             <th>Min Distance</th>
                             <th>Date Available</th>
                             <th>Options</th>
+                            <th>$/Mile</th>
+                            <th>Qty</th>
+                            <th>Handle</th>
+                            <th>Handle Phone</th>
                             <th>Special Information</th>
                         </tr>
                         </thead>
@@ -162,10 +217,13 @@
                             <td>{{ singleTruck.wfc_rjs_trucks_dest_city }}</td>
                             <td>{{ singleTruck.wfc_rjs_trucks_dest_state }}</td>
                             <td>{{ singleTruck.wfc_rjs_trucks_trailer_type }}</td>
-                            <td>{{ singleTruck.wfc_rjs_trucks_weight }}</td>
                             <td>{{ singleTruck.wfc_rjs_trucks_min_distance }}</td>
                             <td>{{ singleTruck.wfc_rjs_trucks_pickup_date | date:"M/dd/yy" }}</td>
                             <td>{{ singleTruck | scfTrailerOptionsConcat }}</td>
+                            <td>{{ singleTruck.wfc_rjs_trucks_rate_per_mile }}</td>
+                            <td>{{ singleTruck.wfc_rjs_trucks_qty }}</td>
+                            <td>{{ singleTruck.wfc_rjs_trucks_handle }}</td>
+                            <td>{{ singleTruck.wfc_rjs_trucks_handle_phone }}</td>
                             <td>{{ singleTruck.wfc_rjs_trucks_special_information }}</td>
                             <td>
                                 <button type="button" ng-click="removeSingletruck($index)">Remove Truck</button>

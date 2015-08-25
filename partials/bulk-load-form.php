@@ -3,6 +3,14 @@
     <div class="wfc-form-container">
         <div class="container">
             <div class="row">
+                <div class="col-md-6">
+                    <!--DIV IS EMPTY ON PURPOSE-->
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger btn-md" ng-click="cancel()">Cancel</button>
+                </div>
+            </div>
+            <div class="row">
                 <form id="bulkTruckForm" name="bulk" ng-submit="addSingletruck(bulk.$valid)" novalidate>
                     <fieldset>
                         <div class="row">
@@ -93,9 +101,9 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="control-label wfc-section-title">Partial <br/><input type="checkbox"
-                                                                            ng-model="bulksingletruckformdata.wfc_rjs_loads_size"
-                                                                            ng-true-value="'Partial/LTL'"
-                                                                            ng-false-value="'No'">
+                                                                                                   ng-model="bulksingletruckformdata.wfc_rjs_loads_size"
+                                                                                                   ng-true-value="'Partial/LTL'"
+                                                                                                   ng-false-value="'No'">
                                 </label>
                             </div>
                             <div class="col-md-4">
@@ -109,7 +117,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4" ng-class="{'has-error': bulk.wfc_rjs_loads_pickup_date.$invalid && bulk.$submitted}">
+                            <div class="col-md-4"
+                                 ng-class="{'has-error': bulk.wfc_rjs_loads_pickup_date.$invalid && bulk.$submitted}">
                                 <label class="control-label wfc-section-title"
                                        for="wfc_rjs_loads_pickup_date">Date Available
                                     <span class="required">*</span>
@@ -145,7 +154,26 @@
                                        type="text"
                                        class="form-control input-md">
                             </div>
-
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label wfc-section-title" for="wfc_rjs_loads_handle">Handle</label>
+                                <input id="wfc_rjs_loads_handle"
+                                       ng-model="bulksingletruckformdata.wfc_rjs_loads_handle"
+                                       name="wfc_rjs_loads_handle"
+                                       type="text"
+                                       class="form-control input-md">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label wfc-section-title"
+                                       for="wfc_rjs_loads_handle_phone">Handle Phone
+                                </label>
+                                <input id="wfc_rjs_loads_handle_phone"
+                                       ng-model="bulksingletruckformdata.wfc_rjs_loads_handle_phone"
+                                       name="wfc_rjs_loads_handle_phone"
+                                       type="text"
+                                       class="form-control input-md">
+                            </div>
                         </div>
                         <div class="row special-information">
                             <div class="col-md-12">
@@ -184,6 +212,8 @@
                             <th>Pickup Date</th>
                             <th>Payment</th>
                             <th>QTY</th>
+                            <th>Handle</th>
+                            <th>Handle Phone</th>
                             <th>Special Info</th>
                             <th>Delete</th>
                         </tr>
@@ -202,6 +232,8 @@
                             <td>{{ singleTruck.wfc_rjs_loads_pickup_date | date:"M/dd/yy" }}</td>
                             <td>{{ singleTruck.wfc_rjs_loads_amount }}</td>
                             <td>{{ singleTruck.wfc_rjs_loads_qty}}</td>
+                            <td>{{ singleTruck.wfc_rjs_loads_handle}}</td>
+                            <td>{{ singleTruck.wfc_rjs_loads_handle_phone}}</td>
                             <td>{{ singleTruck.wfc_rjs_loads_special_information}}</td>
                             <td>
                                 <button type="button" ng-click="removeSingletruck($index)">Remove Load</button>
