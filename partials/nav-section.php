@@ -20,9 +20,9 @@
                 <li>
                 <a ng-click="openBulkModal()">Bulk Create {{rjsposttype | capitalize}}</a>
                 </li>
-                <li ng-class="{ active: activePath=='/search-posts/?type=rjs_{{rjsposttype}}' }">
+                <!-- <li ng-class="{ active: activePath=='/search-posts/?type=rjs_{{rjsposttype}}' }">
                 <a href="{{wfcLocalized.site}}search-posts/?type=rjs_{{rjsposttype}}">Search Posts</a>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

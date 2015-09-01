@@ -76,9 +76,9 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
      */
     if ($location.url() == '/favorite-posts/?type=rjs_' + $scope.rjsposttype) {
         loadFavRemoteData();
-    } else if($location.url() != '/search-posts/?type=rjs_' + $scope.rjsposttype){
+    } else if ($location.url() != '/search-posts/?type=rjs_' + $scope.rjsposttype) {
         loadRemoteData();
-    } else{
+    } else {
         $scope.loading = false;
     }
 
@@ -138,6 +138,8 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                 $scope.usStates = angular.fromJson(wfcLocalized.us_states);
                 $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
                 $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
+                $scope.user_handle = wfcLocalized.user_handle;
+                $scope.user_handle_phone = wfcLocalized.user_handle_phone;
 
                 /**
                  * submit the form
@@ -217,6 +219,9 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                 $scope.usStates = angular.fromJson(wfcLocalized.us_states);
                 $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
                 $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
+                $scope.user_handle = wfcLocalized.user_handle;
+                $scope.user_handle_phone = wfcLocalized.user_handle_phone;
+
                 $scope.loading = true;
                 $scope.truck = postObj;
                 $scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date = new Date($scope.truck.rjsmeta.wfc_rjs_trucks_pickup_date);
@@ -235,6 +240,15 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                     return $scope.loading;
                 }
             }
+        });
+        /**
+         * update $scope.loading from modal.open.resolve
+         */
+        modalInstance.result.then(function (n) {
+            console.log(n);
+            $scope.loading = n;
+        }, function (n) {
+            $scope.loading = n;
         });
     };
     $scope.deletePost = function (ID) {
@@ -283,6 +297,9 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                 $scope.usStates = angular.fromJson(wfcLocalized.us_states);
                 $scope.trailerTypes = angular.fromJson(wfcLocalized.trailer_type);
                 $scope.trailerSizes = angular.fromJson(wfcLocalized.trailer_size);
+                $scope.user_handle = wfcLocalized.user_handle;
+                $scope.user_handle_phone = wfcLocalized.user_handle_phone;
+
                 $scope.loading = true;
                 $scope.bulkTrucks = [];
                 $scope.addSingletruck = function (isValid) {
@@ -303,6 +320,15 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
                     $modalInstance.close();
                 };
             }
+        });
+        /**
+         * update $scope.loading from modal.open.resolve
+         */
+        modalInstance.result.then(function (n) {
+            console.log(n);
+            $scope.loading = n;
+        }, function (n) {
+            $scope.loading = n;
         });
     };
 
@@ -325,7 +351,7 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         $scope.disableBulk = true;
     };
 
-    $scope.getExportArray = function(){
+    $scope.getExportArray = function () {
         var r = [];
         angular.forEach($scope.rowCollection, function (value, key) {
             id = value.ID;

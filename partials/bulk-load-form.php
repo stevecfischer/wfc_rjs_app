@@ -162,6 +162,7 @@
                                        ng-model="bulksingletruckformdata.wfc_rjs_loads_handle"
                                        name="wfc_rjs_loads_handle"
                                        type="text"
+                                       value="{{bulksingletruckformdata.wfc_rjs_loads_handle = bulksingletruckformdata.wfc_rjs_loads_handle || user_handle}}"
                                        class="form-control input-md">
                             </div>
                             <div class="col-md-6">
@@ -172,6 +173,7 @@
                                        ng-model="bulksingletruckformdata.wfc_rjs_loads_handle_phone"
                                        name="wfc_rjs_loads_handle_phone"
                                        type="text"
+                                       value="{{bulksingletruckformdata.wfc_rjs_loads_handle_phone = bulksingletruckformdata.wfc_rjs_loads_handle_phone || user_handle_phone}}"
                                        class="form-control input-md">
                             </div>
                         </div>

@@ -246,6 +246,7 @@
                             <input id="wfc_rjs_handle"
                                    ng-model="truck.rjsmeta.wfc_rjs_trucks_handle"
                                    type="text"
+                                   value="{{truck.rjsmeta.wfc_rjs_trucks_handle = truck.rjsmeta.wfc_rjs_trucks_handle || user_handle}}"
                                    class="form-control input-md">
                         </div>
                         <div class="col-md-6">
@@ -255,6 +256,7 @@
                             <input id="wfc_rjs_handle_phone"
                                    ng-model="truck.rjsmeta.wfc_rjs_trucks_handle_phone"
                                    type="text"
+                                   value="{{truck.rjsmeta.wfc_rjs_trucks_handle_phone = truck.rjsmeta.wfc_rjs_trucks_handle_phone || user_handle_phone}}"
                                    class="form-control input-md">
                         </div>
                     </div>

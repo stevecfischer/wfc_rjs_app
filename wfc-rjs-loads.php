@@ -22,6 +22,8 @@
     require_once('includes/rjs_routes.php');
     require_once('includes/rjs_utilities.php');
     require_once('includes/rjs_post_type_manager.php');
+    require_once('includes/rjs_user_profile.php');
+
     /*
     ===============================
     REGISTER CUSTOM POST TYPE WITH CUSTOM META BOX OPTIONS
@@ -159,6 +161,7 @@
             global $us_states_array;
             global $rjs_trailer_type;
             global $rjs_trailer_size;
+            global $current_user;
             wp_enqueue_style( 'bootstrap', plugin_dir_url( __FILE__ ).'css/bootstrap.min.css' );
             wp_enqueue_style( 'rjs-styles', plugin_dir_url( __FILE__ ).'css/styles.css' );
             // Angular Core
@@ -246,6 +249,8 @@
                     'us_states'          => json_encode( $json_us_states ),
                     'trailer_type'       => json_encode( $json_trailer_type ),
                     'trailer_size'       => json_encode( $json_trailer_size ),
+                    'user_handle'        => get_the_author_meta( 'rjs_handle', $current_user->ID ),
+                    'user_handle_phone'  => get_the_author_meta( 'rjs_handle_phone', $current_user->ID ),
                 )
             );
         }
