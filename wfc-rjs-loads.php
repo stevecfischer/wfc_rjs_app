@@ -151,7 +151,6 @@
     class wprjs
     {
         function wprjs(){
-            global $wpdb;
             add_action( 'wp_enqueue_scripts', array($this, 'angularScripts') );
             add_filter( 'json_insert_post', array($this, 'post_add_tax'), 10, 3 );
         }
@@ -215,9 +214,9 @@
                 'favorite_truck_posts' => plugin_dir_url( __FILE__ ).'partials/favorite-truck-posts.php',
                 'favorite_load_posts'  => plugin_dir_url( __FILE__ ).'partials/favorite-load-posts.php',
                 'rjs_pagination'       => plugin_dir_url( __FILE__ ).'partials/rjs.pagination.html',
-                'rjs_search_form'           => plugin_dir_url( __FILE__ ).'partials/search-form.php',
-                'rjs_search_page'           => plugin_dir_url( __FILE__ ).'partials/post-search.php',
-                'rjs_nav_section'           => plugin_dir_url( __FILE__ ).'partials/nav-section.php',
+                'rjs_search_form'      => plugin_dir_url( __FILE__ ).'partials/search-form.php',
+                'rjs_search_page'      => plugin_dir_url( __FILE__ ).'partials/post-search.php',
+                'rjs_nav_section'      => plugin_dir_url( __FILE__ ).'partials/nav-section.php',
                 'rjs_footer'           => plugin_dir_url( __FILE__ ).'partials/rjs-footer.php',
             );
             // Localize Variables
@@ -258,7 +257,14 @@
         }
     }
 
-    new wprjs();
+    add_action( 'posts_selection', 'init' );
+
+    function init(){
+        if( is_page( 'Manage Posts' ) || is_page( 'Favorite Posts' ) ){
+            new wprjs();
+        }
+    }
+
     add_filter( 'json_query_vars', 'slug_allow_meta', 10, 1 );
     function slug_allow_meta( $valid_vars ){
         $valid_vars = array_merge( $valid_vars, array('meta_key', 'meta_value', 'meta_query') );
@@ -273,8 +279,8 @@
         /*
          * only return what we need.
          */
-        //$filterArr = array('ID' => $data['ID'], 'rjsmeta' => $data['rjsmeta']);
-        $filterArr = $data;
+        $filterArr = array('ID' => $data['ID'], 'rjsmeta' => $data['rjsmeta']);
+        //$filterArr = $data;
         return $filterArr;
     }
 
@@ -369,11 +375,11 @@
      *
      * @return string SQL JOIN statement
      */
-    add_filter( 'posts_join', 'search_meta_data_join');
+    add_filter( 'posts_join', 'search_meta_data_join' );
     function search_meta_data_join( $join ){
         global $wp_query, $wpdb;
-//        print_r($wp_query);
-//        die('ddddd');
+        //        print_r($wp_query);
+        //        die('ddddd');
 
         // Only join the post meta table if we are performing a search
         if( empty (get_query_var( 's' )) ){

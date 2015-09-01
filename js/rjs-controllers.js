@@ -324,6 +324,20 @@ app.controller('TruckController', function ($scope, $routeParams, $location, tru
         $scope.selectedAll = false;
         $scope.disableBulk = true;
     };
+
+    $scope.getExportArray = function(){
+        var r = [];
+        angular.forEach($scope.rowCollection, function (value, key) {
+            id = value.ID;
+            meta = [];
+            angular.forEach(value.rjsmeta, function (valuea, keya) {
+                meta.push(valuea);
+            });
+            r.push([id, meta]);
+        });
+        console.log(r);
+        return r;
+    }
     // ---
     // PRIVATE METHODS.
     // ---

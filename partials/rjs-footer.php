@@ -6,6 +6,7 @@
         </button>
     </span>
     <span class="col-md-2">
-        <button class="btn btn-info btn-md" type="button" ng-csv="trucks" filename="export.csv">Export</button>
+        <button class="btn btn-info btn-md" type="button" ng-csv="getExportArray()" text-delimiter="\"  filename="export.csv">Export</button>
+        {{rowCollection | json }}
     </span>
 </div>
